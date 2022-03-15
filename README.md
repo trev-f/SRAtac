@@ -1,11 +1,11 @@
-# sralign
-A flexible pipeline for short read alignment to a reference.
+# SRAtac
+A pipeline for ATAC-seq data analysis built on SRAlign.
 
 ## Introduction
 
-**sralign** is a [Nextflow](https://www.nextflow.io/) pipeline for aligning short reads to a reference. 
+**SRAtac** is a [Nextflow](https://www.nextflow.io/) pipeline for processing ATAC-seq data. 
 
-**sralign** is designed to be highly flexible by allowing for the easy addition of tools to the pipeline as well as serving as a starting point for genomic analyses that rely on alignment of short reads to a reference.
+**SRAtac** is designed to be highly flexible pipeline for ATAC-seq data processing. The goal of this pipeline is to perform end-to-end data processing of ATAC-seq samples with extensive QC at all steps.
 
 ## Pipeline overview
 
