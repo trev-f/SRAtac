@@ -11,7 +11,8 @@ workflow SamStatsQCSWF {
         SamStatsMultiQC(SamStats.out.sST.collect(), SamStats.out.sIX.collect(), runName, SamStats.out.tools.first())
 
     emit:
-        samtoolsStats = SamStats.out.sST
+        samtoolsStats    = SamStats.out.sST
         samtoolsIdxstats = SamStats.out.sIX
         samtoolsStatsIS  = SamStats.out.sSTIS
+        pctDup           = SamStats.out.pctDup
 }

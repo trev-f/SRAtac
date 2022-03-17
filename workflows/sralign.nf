@@ -212,11 +212,13 @@ workflow sralign {
         ch_alignGenomeStats    = SamStatsQC.out.samtoolsStats
         ch_alignGenomeIdxstats = SamStatsQC.out.samtoolsIdxstats
         ch_alignGenomeStatsIS  = SamStatsQC.out.samtoolsStatsIS
+        ch_alignGenomePctDup   = SamStatsQC.out.pctDup
         }
     } else {
         ch_alignGenomeStats    = Channel.empty()
         ch_alignGenomeIdxstats = Channel.empty()
         ch_alignGenomeStatsIS  = Channel.empty()
+        ch_alignGenomePctDup   = Channel.empty()
     }
 
     /*
@@ -284,7 +286,7 @@ workflow sralign {
         ch_preseqLcExtrap = Channel.empty()
         ch_psRealCounts   = Channel.empty()
     }
-    
+
 
     /*
     ---------------------------------------------------------------------
@@ -298,6 +300,7 @@ workflow sralign {
         .concat(ch_alignGenomeStats)
         .concat(ch_alignGenomeIdxstats)
         .concat(ch_alignGenomeStatsIS)
+        .concat(ch_alignGenomePctDup)
         .concat(ch_contaminantFlagstat)
         .concat(ch_preseqLcExtrap)
         .concat(ch_psRealCounts)
