@@ -283,7 +283,6 @@ workflow sralign {
         ch_psRealCounts   = Channel.empty()
     }
     
-    ch_psRealCounts.view()
 
     /*
     ---------------------------------------------------------------------
