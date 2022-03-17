@@ -1,9 +1,28 @@
+ignore_images: false
+
 run_modules:
   - fastqc
   - samtools
   - preseq
+  - custom_content
 
 module_order:
   - fastqc
   - samtools
   - preseq
+  - custom_content
+
+custom_data:
+  insert_size:
+    section_name: "Insert size"
+    file_format: "tsv"
+    plot_type: "linegraph"
+  pct_duplicate:
+    section_name: "Percent duplicate reads"
+    file_format: "tsv"
+    plot_type: "bargraph"
+sp:
+  insert_size:
+    fn: "*_sST-IS.txt"
+  pct_duplicate:
+    fn: "*_pctDup.txt"
