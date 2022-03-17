@@ -297,6 +297,7 @@ workflow sralign {
         .concat(ch_trimReadsFQC)
         .concat(ch_alignGenomeStats)
         .concat(ch_alignGenomeIdxstats)
+        .concat(ch_alignGenomeStatsIS)
         .concat(ch_contaminantFlagstat)
         .concat(ch_preseqLcExtrap)
         .concat(ch_psRealCounts)

@@ -1,9 +1,22 @@
+ignore_images: false
+
 run_modules:
   - fastqc
   - samtools
   - preseq
+  - custom_content
 
 module_order:
   - fastqc
   - samtools
   - preseq
+  - custom_content
+
+custom_data:
+  insert_size:
+    section_name: "Insert size"
+    file_format: "tsv"
+    plot_type: "linegraph"
+sp:
+  insert_size:
+    fn: "*_sST-IS.txt"
