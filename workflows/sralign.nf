@@ -211,10 +211,12 @@ workflow sralign {
         )
         ch_alignGenomeStats    = SamStatsQC.out.samtoolsStats
         ch_alignGenomeIdxstats = SamStatsQC.out.samtoolsIdxstats
+        ch_alignGenomeStatsIS  = SamStatsQC.out.samtoolsStatsIS
         }
     } else {
         ch_alignGenomeStats    = Channel.empty()
         ch_alignGenomeIdxstats = Channel.empty()
+        ch_alignGenomeStatsIS  = Channel.empty()
     }
 
     /*

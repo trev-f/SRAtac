@@ -17,6 +17,7 @@ process SamStats {
     output:
         path '*_sST.txt', emit: sST
         path '*_sIX-idxstat.txt', emit: sIX
+        path '*sST-IS.txt', emit: sSTIS
         val toolIDs, emit: tools
 
     script:
@@ -29,11 +30,19 @@ process SamStats {
         toolIDsIX += 'sIX-idxstat'
         suffixsIX = toolIDsIX ? "__${toolIDsIX.join('_')}" : ''
 
-        toolIDs += ['sST', 'sIX-idxstat']
+        toolIDsSTIS = toolIDs
+        toolIDsSTIS += 'sST-IS'
+        suffixsSTIS = toolIDsSTIS ? "__${toolIDsSTIS.join('_')}" : ''
 
+        toolIDs += ['sST', 'sIX-idxstat']
 
         """
         samtools stats ${bam} > ${metadata.sampleName}${suffixsST}.txt
         samtools idxstats ${bam} > ${metadata.sampleName}${suffixsIX}.txt
+
+        # extract insert sizes
+        grep ^IS ${metadata.sampleName}${suffixsST}.txt \
+            | cut -f 2,3 \
+            > ${metadata.sampleName}${suffixsSTIS}.txt
         """
 }
