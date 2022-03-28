@@ -9,7 +9,8 @@ process SambambaFilterBam {
 
     container 'quay.io/biocontainers/sambamba:0.8.2--h98b6b92_2'
 
-    publishDir "${params.baseDirData}/align", mode: 'copy', pattern: '*.bam'
+    publishDir "${params.baseDirData}/align/filter", mode: 'copy', pattern: '*.bam'
+    publishDir "${params.baseDirData}/align/filter", mode: 'copy', pattern: '*.bai'
 
     input:
         tuple val(metadata), path(bam), path(bai), val(toolIDs)
@@ -17,19 +18,30 @@ process SambambaFilterBam {
         val mitoChr
 
     output:
-        tuple val(metadata), path('*.bam'), val(toolIDs), emit: bam
+        tuple val(metadata), path('*.bam'), path('*.bai'), val(toolIDs), emit: bamBai
 
     script:
         // set suffix
-        toolIDs += 'sbV'
+        toolIDs += 'sbF'
         suffix = toolIDs ? "__${toolIDs.join('_')}" : ''
         """
+        # filter bam file
         sambamba view \
             --filter "mapping_quality >= ${mapQThreshold} and not ref_name == '${mitoChr}' and not unmapped" \
             --format bam \
             --with-header \
             --nthreads ${task.cpus} \
-            --output-filename ${metadata.sampleName}${suffix}.bam \
-            ${bam}
+            ${bam} | \
+
+        # sort filtered bam file
+        sambamba sort \
+            --nthreads ${task.cpus} \
+            --out ${metadata.sampleName}${suffix}.bam \
+            /dev/stdin
+        
+        # index sorted and filtered bam file
+        sambamba index \
+            --nthreads ${task.cpus} \
+            ${metadata.sampleName}${suffix}.bam
         """
 }
