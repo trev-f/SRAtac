@@ -82,6 +82,7 @@ include { SeqtkSample           as SeqtkSample        } from '../modules/SeqtkSa
 include { ContaminantStatsQCSWF as ContaminantStatsQC } from '../subworkflows/ContaminantStatsQCSWF.nf'
 include { FullMultiQC           as FullMultiQC        } from '../modules/FullMultiQC.nf'
 include { PreseqSWF             as Preseq             } from '../subworkflows/PreseqSWF.nf'
+include { SambambaFilterBam     as SambambaFilterBam  } from '../modules/SambambaFilterBam.nf'
 
 
 workflow sralign {
@@ -285,6 +286,32 @@ workflow sralign {
     } else {
         ch_preseqLcExtrap = Channel.empty()
         ch_psRealCounts   = Channel.empty()
+    }
+
+
+    /*
+    ---------------------------------------------------------------------
+        Filter uninformative reads
+    ---------------------------------------------------------------------
+    */
+
+    // Sambamba Filter
+    if (!params.skipFilterBam) {
+        SambambaFilterBam(
+            ch_bamIndexedGenome,
+            params.mappingQualityThreshold,
+            genome[ 'mitoChr' ]
+        )
+        ch_bamFilteredIndexedGenome = SambambaFilterBam.out.bamBai
+    } else {
+        ch_bamFilteredIndexedGenome = Channel.empty()
+    }
+
+    // Create alignments channel to use for other analyses, i.e. filtered or unfiltered alignments?
+    if (!params.skipFilterBam && !params.forceUnfilteredBam) {
+        ch_alignments = ch_bamFilteredIndexedGenome
+    } else {
+        ch_alignments = ch_bamIndexedGenome
     }
 
 
