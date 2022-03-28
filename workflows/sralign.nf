@@ -291,16 +291,22 @@ workflow sralign {
 
     /*
     ---------------------------------------------------------------------
-        Filter uninformative and 
+        Filter uninformative reads
     ---------------------------------------------------------------------
     */
 
     // Sambamba Filter
-    SambambaFilterBam(
-        ch_bamIndexedGenome,
-        params.mappingQualityThreshold,
-        genome[ 'mitoChr' ]
-    )
+    if (!params.skipFilterBam) {
+        SambambaFilterBam(
+            ch_bamIndexedGenome,
+            params.mappingQualityThreshold,
+            genome[ 'mitoChr' ]
+        )
+        ch_bamFilteredIndexedGenome = SambambaFilterBam.out.bamBai
+    } else {
+        ch_bamFilteredIndexedGenome = Channel.empty()
+    }
+
 
     /*
     ---------------------------------------------------------------------
