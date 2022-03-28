@@ -299,7 +299,7 @@ workflow sralign {
     SambambaFilterBam(
         ch_bamIndexedGenome,
         params.mappingQualityThreshold,
-        'MtDNA'
+        genome[ 'mitoChr' ]
     )
 
     /*
