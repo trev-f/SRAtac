@@ -307,6 +307,13 @@ workflow sralign {
         ch_bamFilteredIndexedGenome = Channel.empty()
     }
 
+    // Create alignments channel to use for other analyses, i.e. filtered or unfiltered alignments?
+    if (!params.skipFilterBam && !params.forceUnfilteredBam) {
+        ch_alignments = ch_bamFilteredIndexedGenome
+    } else {
+        ch_alignments = ch_bamIndexedGenome
+    }
+
 
     /*
     ---------------------------------------------------------------------
