@@ -82,6 +82,7 @@ include { SeqtkSample           as SeqtkSample        } from '../modules/SeqtkSa
 include { ContaminantStatsQCSWF as ContaminantStatsQC } from '../subworkflows/ContaminantStatsQCSWF.nf'
 include { FullMultiQC           as FullMultiQC        } from '../modules/FullMultiQC.nf'
 include { PreseqSWF             as Preseq             } from '../subworkflows/PreseqSWF.nf'
+include { SambambaFilterBam     as SambambaFilterBam  } from '../modules/SambambaFilterBam.nf'
 
 
 workflow sralign {
@@ -287,6 +288,19 @@ workflow sralign {
         ch_psRealCounts   = Channel.empty()
     }
 
+
+    /*
+    ---------------------------------------------------------------------
+        Filter uninformative and 
+    ---------------------------------------------------------------------
+    */
+
+    // Sambamba Filter
+    SambambaFilterBam(
+        ch_bamIndexedGenome,
+        params.mappingQualityThreshold,
+        'MtDNA'
+    )
 
     /*
     ---------------------------------------------------------------------
