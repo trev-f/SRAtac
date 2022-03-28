@@ -1,7 +1,3 @@
 lib_ID,sample_name,replicate,reads1,reads2
-SRR5860427,hmg-3,1,data/reads/raw/SRR5860427_GSM2715417_hmg-3_rep1_Caenorhabditis_elegans_ATAC-seq_100000_1.fastq.gz,data/reads/raw/SRR5860427_GSM2715417_hmg-3_rep1_Caenorhabditis_elegans_ATAC-seq_100000_2.fastq.gz
-SRR5860428,hmg-3,2,data/reads/raw/SRR5860428_GSM2715418_hmg-3_rep2_Caenorhabditis_elegans_ATAC-seq_100000_1.fastq.gz,data/reads/raw/SRR5860428_GSM2715418_hmg-3_rep2_Caenorhabditis_elegans_ATAC-seq_100000_2.fastq.gz
-SRR5860429,hmg-3,3,data/reads/raw/SRR5860429_GSM2715419_hmg-3_rep3_Caenorhabditis_elegans_ATAC-seq_100000_1.fastq.gz,data/reads/raw/SRR5860429_GSM2715419_hmg-3_rep3_Caenorhabditis_elegans_ATAC-seq_100000_2.fastq.gz
-SRR5860430,spt-16,1,data/reads/raw/SRR5860430_GSM2715420_spt-16_rep1_Caenorhabditis_elegans_ATAC-seq_100000_1.fastq.gz,data/reads/raw/SRR5860430_GSM2715420_spt-16_rep1_Caenorhabditis_elegans_ATAC-seq_100000_2.fastq.gz
-SRR5860431,spt-16,2,data/reads/raw/SRR5860431_GSM2715421_spt-16_rep2_Caenorhabditis_elegans_ATAC-seq_100000_1.fastq.gz,data/reads/raw/SRR5860431_GSM2715421_spt-16_rep2_Caenorhabditis_elegans_ATAC-seq_100000_2.fastq.gz
-SRR5860432,spt-16,3,data/reads/raw/SRR5860432_GSM2715422_spt-16_rep3_Caenorhabditis_elegans_ATAC-seq_100000_1.fastq.gz,data/reads/raw/SRR5860432_GSM2715422_spt-16_rep3_Caenorhabditis_elegans_ATAC-seq_100000_2.fastq.gz
+SRR5860427,hmg-3,1,data/reads/raw/SRR5860427_GSM2715417_hmg-3_rep1_Caenorhabditis_elegans_ATAC-seq_200000_R1.fastq.gz,data/reads/raw/SRR5860427_GSM2715417_hmg-3_rep1_Caenorhabditis_elegans_ATAC-seq_200000_R2.fastq.gz
+SRR5860428,hmg-3,2,data/reads/raw/SRR5860428_GSM2715418_hmg-3_rep2_Caenorhabditis_elegans_ATAC-seq_200000_R1.fastq.gz,data/reads/raw/SRR5860428_GSM2715418_hmg-3_rep2_Caenorhabditis_elegans_ATAC-seq_200000_R2.fastq.gz
