@@ -9,6 +9,9 @@ process SambambaFilterBam {
 
     container 'quay.io/biocontainers/sambamba:0.8.2--h98b6b92_2'
 
+    label 'cpu_mid'
+    label 'mem_mid'
+
     publishDir "${params.baseDirData}/align/filter", mode: 'copy', pattern: '*.bam'
     publishDir "${params.baseDirData}/align/filter", mode: 'copy', pattern: '*.bai'
 
