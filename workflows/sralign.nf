@@ -82,6 +82,9 @@ include { SeqtkSample           as SeqtkSample        } from '../modules/SeqtkSa
 include { ContaminantStatsQCSWF as ContaminantStatsQC } from '../subworkflows/ContaminantStatsQCSWF.nf'
 include { FullMultiQC           as FullMultiQC        } from '../modules/FullMultiQC.nf'
 include { PreseqSWF             as Preseq             } from '../subworkflows/PreseqSWF.nf'
+include { SambambaFilterBam     as SambambaFilterBam  } from '../modules/SambambaFilterBam.nf'
+include { BamCoverage           as BamCoverage        } from '../modules/BamCoverage.nf'
+include { CallPeaksMacs2SWF     as CallPeaksMacs2     } from '../subworkflows/CallPeaksMacs2SWF.nf'
 
 
 workflow sralign {
@@ -290,6 +293,61 @@ workflow sralign {
 
     /*
     ---------------------------------------------------------------------
+        Filter uninformative reads
+    ---------------------------------------------------------------------
+    */
+
+    // Sambamba Filter
+    if (!params.skipFilterBam) {
+        SambambaFilterBam(
+            ch_bamIndexedGenome,
+            params.mappingQualityThreshold,
+            genome[ 'mitoChr' ]
+        )
+        ch_bamFilteredIndexedGenome = SambambaFilterBam.out.bamBai
+    } else {
+        ch_bamFilteredIndexedGenome = Channel.empty()
+    }
+
+    // Create alignments channel to use for other analyses, i.e. filtered or unfiltered alignments?
+    if (!params.skipFilterBam && !params.forceUnfilteredBam) {
+        ch_alignments = ch_bamFilteredIndexedGenome
+    } else {
+        ch_alignments = ch_bamIndexedGenome
+    }
+
+    /*
+    ---------------------------------------------------------------------
+        Bam coverage to bigWig
+    ---------------------------------------------------------------------
+    */
+
+    if (!params.skipBamCoverage) {
+        BamCoverage(
+            ch_alignments,
+            params.binSize,
+            params.normMethod
+        )
+    }
+
+    /*
+    ---------------------------------------------------------------------
+        Peak calling and peaks analysis
+    ---------------------------------------------------------------------
+    */
+
+    // call peaks
+    if (!params.skipPeakCalling) {
+        CallPeaksMacs2(
+            ch_alignments,
+            genome[ 'effectiveGenomeSize' ]
+        )
+        ch_peaksNarrowPeak = CallPeaksMacs2.out.narrowPeak
+        ch_peaksXls        = CallPeaksMacs2.out.xls
+    }
+
+    /*
+    ---------------------------------------------------------------------
         Full pipeline MultiQC
     ---------------------------------------------------------------------
     */
@@ -304,6 +362,7 @@ workflow sralign {
         .concat(ch_contaminantFlagstat)
         .concat(ch_preseqLcExtrap)
         .concat(ch_psRealCounts)
+        .concat(ch_peaksXls)
 
     FullMultiQC(
         inName,
