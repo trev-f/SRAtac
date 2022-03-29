@@ -336,9 +336,11 @@ workflow sralign {
     ---------------------------------------------------------------------
     */
 
+    // call peaks
     if (!params.skipPeakCalling) {
         CallPeaksMacs2(
-            ch_alignments
+            ch_alignments,
+            genome[ 'effectiveGenomeSize' ]
         )
     }
 
