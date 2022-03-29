@@ -9,6 +9,9 @@ process BamCoverage {
 
     container 'quay.io/biocontainers/deeptools:3.5.1--py_0'
 
+    label 'cpu_mid'
+    label 'mem_mid'
+
     publishDir "${params.baseDirData}/coverage", mode: 'copy', pattern: '*.bw'
 
     input:
