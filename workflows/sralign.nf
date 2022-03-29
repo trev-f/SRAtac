@@ -84,6 +84,7 @@ include { FullMultiQC           as FullMultiQC        } from '../modules/FullMul
 include { PreseqSWF             as Preseq             } from '../subworkflows/PreseqSWF.nf'
 include { SambambaFilterBam     as SambambaFilterBam  } from '../modules/SambambaFilterBam.nf'
 include { BamCoverage           as BamCoverage        } from '../modules/BamCoverage.nf'
+include { CallPeaksMacs2SWF     as CallPeaksMacs2     } from '../subworkflows/CallPeaksMacs2SWF.nf'
 
 
 workflow sralign {
@@ -331,6 +332,22 @@ workflow sralign {
 
     /*
     ---------------------------------------------------------------------
+        Peak calling and peaks analysis
+    ---------------------------------------------------------------------
+    */
+
+    // call peaks
+    if (!params.skipPeakCalling) {
+        CallPeaksMacs2(
+            ch_alignments,
+            genome[ 'effectiveGenomeSize' ]
+        )
+        ch_peaksNarrowPeak = CallPeaksMacs2.out.narrowPeak
+        ch_peaksXls        = CallPeaksMacs2.out.xls
+    }
+
+    /*
+    ---------------------------------------------------------------------
         Full pipeline MultiQC
     ---------------------------------------------------------------------
     */
@@ -345,6 +362,7 @@ workflow sralign {
         .concat(ch_contaminantFlagstat)
         .concat(ch_preseqLcExtrap)
         .concat(ch_psRealCounts)
+        .concat(ch_peaksXls)
 
     FullMultiQC(
         inName,
