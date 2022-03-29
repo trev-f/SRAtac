@@ -342,6 +342,8 @@ workflow sralign {
             ch_alignments,
             genome[ 'effectiveGenomeSize' ]
         )
+        ch_peaksNarrowPeak = CallPeaksMacs2.out.narrowPeak
+        ch_peaksXls        = CallPeaksMacs2.out.xls
     }
 
     /*

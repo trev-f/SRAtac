@@ -20,4 +20,5 @@ workflow CallPeaksMacs2SWF {
     
     emit:
         narrowPeak = Macs2CallPeaks.out.narrowPeak
+        xls        = Macs2CallPeaks.out.xls
 }
