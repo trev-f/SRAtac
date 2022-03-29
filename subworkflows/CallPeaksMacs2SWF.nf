@@ -12,8 +12,12 @@ workflow CallPeaksMacs2SWF {
             bamIndexed
         )
 
+        // call peaks
         Macs2CallPeaks(
             BamToBed.out.bed,
             effectiveGenomeSize
         )
+    
+    emit:
+        narrowPeak = Macs2CallPeaks.out.narrowPeak
 }

@@ -9,14 +9,18 @@ process Macs2CallPeaks {
 
     container 'quay.io/biocontainers/macs2:2.2.7.1--py39hbf8eff0_4'
 
-    publishDir "${params.baseDirData}/peaks", mode: 'copy', pattern: '*'
+    publishDir "${params.baseDirData}/peaks", mode: 'copy', pattern: '*_peaks.narrowPeak'
+    publishDir "${params.baseDirData}/peaks", mode: 'copy', pattern: '*_peaks.xls'
+    publishDir "${params.baseDirData}/peaks", mode: 'copy', pattern: '*_summits.bed'
 
     input:
         tuple val(metadata), path(bed), val(toolIDs)
         val effectiveGenomeSize
 
     output:
-        path '*'
+        tuple val(metadata), path('*_peaks.narrowPeak'), val(toolIDs), emit: narrowPeak
+        tuple val(metadata), path('*_peaks.xls'),        val(toolIDs), emit: xls
+        tuple val(metadata), path('*_summits.bed'),      val(toolIDs), emit: summits
 
     script:
         // set suffix
