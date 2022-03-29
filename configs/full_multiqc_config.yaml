@@ -5,12 +5,14 @@ run_modules:
   - samtools
   - preseq
   - custom_content
+  - macs2
 
 module_order:
   - fastqc
   - samtools
   - preseq
   - custom_content
+  - macs2
 
 custom_data:
   insert_size:

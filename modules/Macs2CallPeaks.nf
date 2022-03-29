@@ -19,7 +19,7 @@ process Macs2CallPeaks {
 
     output:
         tuple val(metadata), path('*_peaks.narrowPeak'), val(toolIDs), emit: narrowPeak
-        tuple val(metadata), path('*_peaks.xls'),        val(toolIDs), emit: xls
+        path '*_peaks.xls', emit: xls
         tuple val(metadata), path('*_summits.bed'),      val(toolIDs), emit: summits
 
     script:

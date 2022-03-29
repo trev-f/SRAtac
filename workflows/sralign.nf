@@ -362,6 +362,7 @@ workflow sralign {
         .concat(ch_contaminantFlagstat)
         .concat(ch_preseqLcExtrap)
         .concat(ch_psRealCounts)
+        .concat(ch_peaksXls)
 
     FullMultiQC(
         inName,
