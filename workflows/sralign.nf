@@ -83,6 +83,7 @@ include { ContaminantStatsQCSWF as ContaminantStatsQC } from '../subworkflows/Co
 include { FullMultiQC           as FullMultiQC        } from '../modules/FullMultiQC.nf'
 include { PreseqSWF             as Preseq             } from '../subworkflows/PreseqSWF.nf'
 include { SambambaFilterBam     as SambambaFilterBam  } from '../modules/SambambaFilterBam.nf'
+include { BamCoverage           as BamCoverage        } from '../modules/BamCoverage.nf'
 
 
 workflow sralign {
@@ -314,6 +315,19 @@ workflow sralign {
         ch_alignments = ch_bamIndexedGenome
     }
 
+    /*
+    ---------------------------------------------------------------------
+        Bam coverage to bigWig
+    ---------------------------------------------------------------------
+    */
+
+    if (!params.skipBamCoverage) {
+        BamCoverage(
+            ch_alignments,
+            params.binSize,
+            params.normMethod
+        )
+    }
 
     /*
     ---------------------------------------------------------------------
