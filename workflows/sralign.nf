@@ -84,6 +84,7 @@ include { FullMultiQC           as FullMultiQC        } from '../modules/FullMul
 include { PreseqSWF             as Preseq             } from '../subworkflows/PreseqSWF.nf'
 include { SambambaFilterBam     as SambambaFilterBam  } from '../modules/SambambaFilterBam.nf'
 include { BamCoverage           as BamCoverage        } from '../modules/BamCoverage.nf'
+include { CallPeaksMacs2SWF     as CallPeaksMacs2     } from '../subworkflows/CallPeaksMacs2SWF.nf'
 
 
 workflow sralign {
@@ -326,6 +327,18 @@ workflow sralign {
             ch_alignments,
             params.binSize,
             params.normMethod
+        )
+    }
+
+    /*
+    ---------------------------------------------------------------------
+        Peak calling and peaks analysis
+    ---------------------------------------------------------------------
+    */
+
+    if (!params.skipPeakCalling) {
+        CallPeaksMacs2(
+            ch_alignments
         )
     }
 
