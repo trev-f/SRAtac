@@ -9,6 +9,8 @@ process Preseq {
 
     container 'quay.io/biocontainers/preseq:3.1.2--h2c25361_3'
 
+    label 'mem_mid'
+
     publishDir "${params.baseDirData}/align/preseq", mode: 'copy', pattern: '*.txt'
 
     input:
