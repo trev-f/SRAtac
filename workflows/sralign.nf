@@ -12,8 +12,9 @@
 */
 
 def tools = [
-    trim      : ['fastp'],
-    alignment : ['bowtie2', 'hisat2']
+    trim       : ['fastp'],
+    alignment  : ['bowtie2', 'hisat2'],
+    mergePeaks : ['homer']
 ]
 
 // check valid read-trimming tool
@@ -23,6 +24,10 @@ assert params.trimTool in tools.trim ,
 // check valid alignment tool
 assert params.alignmentTool in tools.alignment , 
     "'${params.alignmentTool}' is not a valid alignment tool.\n\tValid options: ${tools.alignment.join(', ')}\n\t"
+
+// check valid peak merging tool
+assert params.mergePeaksTool in tools.mergePeaks,
+    "'${params.mergePeaksTool} is not a valied peak-merging tool.\n\tValid options: ${tools.mergePeaks.join(', ')}\n\t'"
 
 ch_multiqcConfig = file(params.multiqcConfig, checkIfExists: true)
 
@@ -84,6 +89,7 @@ include { PreseqSWF             as Preseq             } from "${baseDir}/subwork
 include { SambambaFilterBam     as SambambaFilterBam  } from "${baseDir}/modules/align/SambambaFilterBam.nf"
 include { BamCoverage           as BamCoverage        } from "${baseDir}/modules/coverage/BamCoverage.nf"
 include { CallPeaksMacs2SWF     as CallPeaksMacs2     } from "${baseDir}/subworkflows/peaks/CallPeaksMacs2SWF.nf"
+include { MergePeaksHomer       as MergePeaksHomer    } from "${baseDir}/modules/peaks/MergePeaksHomer.nf"
 include { FullMultiQC           as FullMultiQC        } from "${baseDir}/modules/misc/FullMultiQC.nf"
 
 
@@ -345,6 +351,27 @@ workflow sralign {
         ch_peaksNarrowPeak = CallPeaksMacs2.out.narrowPeak
         ch_peaksXls        = CallPeaksMacs2.out.xls
     }
+
+    // collect peaks files
+    ch_peaksCollect =
+        ch_peaksNarrowPeak
+        .map { it[1, 2] }
+        .groupTuple( by: 1 )
+
+    if (!params.skipMergePeaks) {
+        switch (params.mergePeaksTool) {
+            // merge peaks with homer merge peaks
+            case 'homer':
+                MergePeaksHomer(
+                    ch_peaksCollect,
+                    inName,
+                    genome[ 'effectiveGenomeSize' ]
+                )
+                ch_mergePeaks = MergePeaksHomer.out.mergePeaks
+                break
+        }
+    }
+
 
     /*
     ---------------------------------------------------------------------
