@@ -355,8 +355,9 @@ workflow sralign {
     // collect peaks files
     ch_peaksCollect =
         ch_peaksNarrowPeak
-        .map { it[1] }
-        .collect()
+        .map { it[1, 2] }
+        .groupTuple( by: 1 )
+        .view()
 
     if (!params.skipMergePeaks) {
         switch (params.mergePeaksTool) {
@@ -369,6 +370,7 @@ workflow sralign {
                 break
         }
     }
+
 
     /*
     ---------------------------------------------------------------------
