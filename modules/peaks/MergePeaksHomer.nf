@@ -14,6 +14,7 @@ process MergePeaksHomer {
     input:
         tuple path(peaksFiles), val(toolIDs)
         val inName
+        val effectiveGenomeSize
 
     output:
         path '*_hoM.txt', emit: mergePeaks
@@ -25,6 +26,8 @@ process MergePeaksHomer {
 
         """
         mergePeaks \
+            ${task.ext.args} \
+            -gsize ${effectiveGenomeSize} \
             ${peaksFiles} \
             > ${inName}_${workflow.runName}_${workflow.start}${suffix}.txt
         """

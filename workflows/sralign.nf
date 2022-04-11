@@ -365,7 +365,8 @@ workflow sralign {
             case 'homer':
                 MergePeaksHomer(
                     ch_peaksCollect,
-                    inName
+                    inName,
+                    genome[ 'effectiveGenomeSize' ]
                 )
                 break
         }
