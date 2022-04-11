@@ -76,7 +76,6 @@ include { AlignBowtie2SWF       as AlignBowtie2       ;
           AlignBowtie2SWF       as ContamBowtie2      } from "${baseDir}/subworkflows/align/AlignBowtie2SWF.nf"
 include { AlignHisat2SWF        as AlignHisat2        ; 
           AlignHisat2SWF        as ContamHisat2       } from "${baseDir}/subworkflows/align/AlignHisat2SWF.nf"
-include { SambambaFilterBam     as SambambaFilterBam  } from '../modules/SambambaFilterBam.nf'
 include { BamCoverage           as BamCoverage        } from '../modules/BamCoverage.nf'
 include { CallPeaksMacs2SWF     as CallPeaksMacs2     } from '../subworkflows/CallPeaksMacs2SWF.nf'
 include { PreprocessSamSWF      as PreprocessSam      } from "${baseDir}/subworkflows/align/PreprocessSamSWF.nf"
@@ -84,6 +83,7 @@ include { SamStatsQCSWF         as SamStatsQC         } from "${baseDir}/subwork
 include { SeqtkSample           as SeqtkSample        } from "${baseDir}/modules/reads/SeqtkSample.nf"
 include { ContaminantStatsQCSWF as ContaminantStatsQC } from "${baseDir}/subworkflows/align/ContaminantStatsQCSWF.nf"
 include { PreseqSWF             as Preseq             } from "${baseDir}/subworkflows/align/PreseqSWF.nf"
+include { SambambaFilterBam     as SambambaFilterBam  } from "${baseDir}/modules/align/SambambaFilterBam.nf"
 include { FullMultiQC           as FullMultiQC        } from "${baseDir}/modules/misc/FullMultiQC.nf"
 
 
