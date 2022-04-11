@@ -1,6 +1,6 @@
-include { Samblaster      } from '../modules/Samblaster.nf'
-include { CompressSortSam } from '../modules/CompressSortSam.nf'
-include { IndexBam        } from '../modules/IndexBam.nf'
+include { Samblaster      } from "${baseDir}/modules/align/Samblaster.nf"
+include { CompressSortSam } from "${baseDir}/modules/align/CompressSortSam.nf"
+include { IndexBam        } from "${baseDir}/modules/align/IndexBam.nf"
 
 workflow PreprocessSamSWF {
     take:

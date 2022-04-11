@@ -1,5 +1,5 @@
-include { Bowtie2Build } from '../modules/Bowtie2Build.nf'
-include { Bowtie2Align } from '../modules/Bowtie2Align.nf'
+include { Bowtie2Build } from "${baseDir}/modules/align/Bowtie2Build.nf"
+include { Bowtie2Align } from "${baseDir}/modules/align/Bowtie2Align.nf"
 
 workflow AlignBowtie2SWF {
     take:

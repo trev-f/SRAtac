@@ -1,5 +1,5 @@
-include { Hisat2Build } from '../modules/Hisat2Build.nf'
-include { Hisat2Align } from '../modules/Hisat2Align.nf'
+include { Hisat2Build } from "${baseDir}/modules/align/Hisat2Build.nf"
+include { Hisat2Align } from "${baseDir}/modules/align/Hisat2Align.nf"
 
 workflow AlignHisat2SWF {
     take:

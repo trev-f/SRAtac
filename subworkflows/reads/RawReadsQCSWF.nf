@@ -1,5 +1,5 @@
-include { FastQC } from '../modules/RawFastQC.nf'
-include { ReadsMultiQC } from '../modules/RawReadsMultiQC.nf'
+include { FastQC       } from "${baseDir}/modules/reads/RawFastQC.nf"
+include { ReadsMultiQC } from "${baseDir}/modules/reads/RawReadsMultiQC.nf"
 
 workflow RawReadsQCSWF {
     take:
