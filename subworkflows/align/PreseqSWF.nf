@@ -1,5 +1,5 @@
-include { Preseq           } from '../modules/Preseq.nf'
-include { PreseqRealCounts } from '../modules/PreseqRealCounts.nf'
+include { Preseq           } from "${baseDir}/modules/align/Preseq.nf"
+include { PreseqRealCounts } from "${baseDir}/modules/align/PreseqRealCounts.nf"
 
 workflow PreseqSWF {
     take:

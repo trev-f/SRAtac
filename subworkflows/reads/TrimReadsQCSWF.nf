@@ -1,5 +1,5 @@
-include { FastQC } from '../modules/TrimFastQC.nf'
-include { ReadsMultiQC } from '../modules/TrimReadsMultiQC.nf'
+include { FastQC       } from "${baseDir}/modules/reads/TrimFastQC.nf"
+include { ReadsMultiQC } from "${baseDir}/modules/reads/TrimReadsMultiQC.nf"
 
 workflow TrimReadsQCSWF {
     take:

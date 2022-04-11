@@ -1,4 +1,4 @@
-include { Fastp } from '../modules/Fastp.nf'
+include { Fastp } from "${baseDir}/modules/reads/Fastp.nf"
 
 workflow TrimReadsSWF {
     take:

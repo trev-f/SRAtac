@@ -1,5 +1,5 @@
-include { SamStats } from '../modules/SamStats.nf'
-include { SamStatsMultiQC } from '../modules/SamStatsMultiQC.nf'
+include { SamStats        } from "${baseDir}/modules/align/SamStats.nf"
+include { SamStatsMultiQC } from "${baseDir}/modules/align/SamStatsMultiQC.nf"
 
 workflow SamStatsQCSWF {
     take:
