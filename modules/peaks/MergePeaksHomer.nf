@@ -10,6 +10,7 @@ process MergePeaksHomer {
     container 'quay.io/biocontainers/homer:4.11--pl5321h9f5acd7_7'
 
     publishDir "${params.baseDirData}/peaks/merge", mode: 'copy', pattern: '*_hoM.txt'
+    publishDir "${params.baseDirData}/peaks/merge", mode: 'copy', pattern: '*matrix.txt'
 
     input:
         tuple path(peaksFiles), val(toolIDs)
@@ -17,7 +18,8 @@ process MergePeaksHomer {
         val effectiveGenomeSize
 
     output:
-        path '*_hoM.txt', emit: mergePeaks
+        tuple path('*_hoM.txt'), val(toolIDs), emit: mergePeaks
+        tuple path('*.logPvalue.matrix.txt'), path('*.logRatio.matrix.txt'), path('*.count.matrix.txt'), val(toolIDs), emit: mergePeaksMatrix
 
     script:
         // set suffix
@@ -28,6 +30,7 @@ process MergePeaksHomer {
         mergePeaks \
             ${task.ext.args} \
             -gsize ${effectiveGenomeSize} \
+            -matrix ${inName}_${workflow.runName}_${workflow.start}${suffix} \
             ${peaksFiles} \
             > ${inName}_${workflow.runName}_${workflow.start}${suffix}.txt
         """
