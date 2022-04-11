@@ -89,6 +89,7 @@ include { PreseqSWF             as Preseq             } from "${baseDir}/subwork
 include { SambambaFilterBam     as SambambaFilterBam  } from "${baseDir}/modules/align/SambambaFilterBam.nf"
 include { BamCoverage           as BamCoverage        } from "${baseDir}/modules/coverage/BamCoverage.nf"
 include { CallPeaksMacs2SWF     as CallPeaksMacs2     } from "${baseDir}/subworkflows/peaks/CallPeaksMacs2SWF.nf"
+include { MergePeaksHomer       as MergePeaksHomer    } from "${baseDir}/modules/peaks/MergePeaksHomer.nf"
 include { FullMultiQC           as FullMultiQC        } from "${baseDir}/modules/misc/FullMultiQC.nf"
 
 
@@ -359,7 +360,12 @@ workflow sralign {
 
     if (!params.skipMergePeaks) {
         switch (params.mergePeaksTool) {
+            // merge peaks with homer merge peaks
             case 'homer':
+                MergePeaksHomer(
+                    ch_peaksCollect,
+                    inName
+                )
                 break
         }
     }
