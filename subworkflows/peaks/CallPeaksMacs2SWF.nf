@@ -1,5 +1,5 @@
-include { BamToBed       } from '../modules/BamToBed.nf'
-include { Macs2CallPeaks } from '../modules/Macs2CallPeaks.nf'
+include { BamToBed       } from "${baseDir}/modules/peaks/BamToBed.nf"
+include { Macs2CallPeaks } from "${baseDir}/modules/peaks/Macs2CallPeaks.nf"
 
 workflow CallPeaksMacs2SWF {
     take:
