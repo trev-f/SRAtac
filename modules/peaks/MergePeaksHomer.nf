@@ -11,6 +11,7 @@ process MergePeaksHomer {
 
     publishDir "${params.baseDirData}/peaks/merge", mode: 'copy', pattern: '*_hoM.txt'
     publishDir "${params.baseDirData}/peaks/merge", mode: 'copy', pattern: '*matrix.txt'
+    publishDir "${params.baseDirData}/peaks/merge", mode: 'copy', pattern: '*-venn.txt'
 
     input:
         tuple path(peaksFiles), val(toolIDs)
@@ -20,6 +21,7 @@ process MergePeaksHomer {
     output:
         tuple path('*_hoM.txt'), val(toolIDs), emit: mergePeaks
         tuple path('*.logPvalue.matrix.txt'), path('*.logRatio.matrix.txt'), path('*.count.matrix.txt'), val(toolIDs), emit: mergePeaksMatrix
+        tuple path('*-venn.txt'), val(toolIDs), emit: mergePeaksVenn
 
     script:
         // set suffix
@@ -31,6 +33,7 @@ process MergePeaksHomer {
             ${task.ext.args} \
             -gsize ${effectiveGenomeSize} \
             -matrix ${inName}_${workflow.runName}_${workflow.start}${suffix} \
+            -venn ${inName}_${workflow.runName}_${workflow.start}${suffix}-venn.txt \
             ${peaksFiles} \
             > ${inName}_${workflow.runName}_${workflow.start}${suffix}.txt
         """

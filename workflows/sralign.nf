@@ -357,7 +357,6 @@ workflow sralign {
         ch_peaksNarrowPeak
         .map { it[1, 2] }
         .groupTuple( by: 1 )
-        .view()
 
     if (!params.skipMergePeaks) {
         switch (params.mergePeaksTool) {
@@ -368,6 +367,7 @@ workflow sralign {
                     inName,
                     genome[ 'effectiveGenomeSize' ]
                 )
+                ch_mergePeaks = MergePeaksHomer.out.mergePeaks
                 break
         }
     }
