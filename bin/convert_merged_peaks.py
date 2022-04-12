@@ -6,6 +6,8 @@ Purpose: Convert merged peaks files to a standard format e.g. SAF or bed
 """
 
 import argparse
+import pandas as pd
+import os
 
 
 # --------------------------------------------------
@@ -48,6 +50,28 @@ def main():
     """main program"""
 
     args = get_args()
+
+    headers = {
+        'homer' : 'name,chromosome,start,end,strand,score,original_file,number_peaks_merged'.split(',')
+    }
+
+    pd.set_option('display.max_columns', 30)
+
+    df = pd.read_csv(args.file, sep='\t', skiprows=1, header=None).iloc[:, 0:8]
+    df.columns = SAFify_header(headers[args.tool])
+    outfile = f'{os.path.splitext(args.file.name)[0]}.saf'
+    df.to_csv(outfile, sep='\t', header=True, index=False)
+
+
+# --------------------------------------------------
+def SAFify_header(header):
+    header[header.index('name')]       = 'GeneID'
+    header[header.index('chromosome')] = 'Chr'
+    header[header.index('start')]      = 'Start'
+    header[header.index('end')]        = 'End'
+    header[header.index('strand')]     = 'Strand'
+
+    return header
 
 
 # --------------------------------------------------
