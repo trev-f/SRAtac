@@ -90,6 +90,7 @@ include { SambambaFilterBam     as SambambaFilterBam  } from "${baseDir}/modules
 include { BamCoverage           as BamCoverage        } from "${baseDir}/modules/coverage/BamCoverage.nf"
 include { CallPeaksMacs2SWF     as CallPeaksMacs2     } from "${baseDir}/subworkflows/peaks/CallPeaksMacs2SWF.nf"
 include { MergePeaksHomer       as MergePeaksHomer    } from "${baseDir}/modules/peaks/MergePeaksHomer.nf"
+include { ConvertMergedPeaks    as ConvertMergedPeaks } from "${projectDir}/modules/peaks/ConvertMergedPeaks.nf"
 include { FullMultiQC           as FullMultiQC        } from "${baseDir}/modules/misc/FullMultiQC.nf"
 
 
@@ -371,6 +372,13 @@ workflow sralign {
                 break
         }
     }
+
+    // convert merged peaks
+    ConvertMergedPeaks(
+        ch_mergePeaks,
+        inName,
+        params.mergePeaksTool
+    )
 
 
     /*
