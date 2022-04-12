@@ -91,6 +91,7 @@ include { BamCoverage           as BamCoverage        } from "${baseDir}/modules
 include { CallPeaksMacs2SWF     as CallPeaksMacs2     } from "${baseDir}/subworkflows/peaks/CallPeaksMacs2SWF.nf"
 include { MergePeaksHomer       as MergePeaksHomer    } from "${baseDir}/modules/peaks/MergePeaksHomer.nf"
 include { ConvertMergedPeaks    as ConvertMergedPeaks } from "${projectDir}/modules/peaks/ConvertMergedPeaks.nf"
+include { CountFeatureCounts    as CountFeatureCounts } from "${projectDir}/modules/counts/CountFeatureCounts.nf"
 include { FullMultiQC           as FullMultiQC        } from "${baseDir}/modules/misc/FullMultiQC.nf"
 
 
@@ -378,6 +379,26 @@ workflow sralign {
         ch_mergePeaks,
         inName,
         params.mergePeaksTool
+    )
+    ch_mergePeaksSAF = ConvertMergedPeaks.out.mergedPeaks
+
+
+    /*
+    ---------------------------------------------------------------------
+        Reads counts matrix
+    ---------------------------------------------------------------------
+    */
+
+    // produce reads counts matrix
+    ch_alignmentsCollect = 
+        ch_alignments
+        .map { it[1, 2, 3] }
+        .groupTuple( by: 2 )
+    
+    CountFeatureCounts(
+        ch_alignmentsCollect,
+        ch_mergePeaksSAF,
+        inName
     )
 
 
