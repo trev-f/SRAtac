@@ -12,7 +12,8 @@ process CountFeatureCounts {
     publishDir "${params.baseDirData}/counts", mode: 'copy', pattern: '*_srF.txt*'
 
     input:
-        tuple path(bams), path(bais), val(toolIDsBams)
+        path bams
+        val toolIDsBams
         tuple path(peaks), val(toolIDsPeaks)
         val inName
 

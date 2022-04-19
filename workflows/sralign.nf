@@ -370,6 +370,11 @@ workflow sralign {
         .first()
         .set { ch_peaksCollectToolIDs }
 
+    ch_peaksCollect
+        .peaks
+        .collect()
+        .combine(ch_peaksCollect.toolIDs)
+
     if (!params.skipMergePeaks) {
         switch (params.mergePeaksTool) {
             // merge peaks with homer merge peaks
@@ -403,15 +408,20 @@ workflow sralign {
     // produce reads counts matrix
     ch_alignmentsCollect = 
         ch_alignments
-        .map { it[1, 2, 3] }
-        .groupTuple( by: 2 )
+        .multiMap {
+            it ->
+            bam:     it[1]
+            bai:     it[2]
+            toolIDs: it[3]
+        }
     
     CountFeatureCounts(
-        ch_alignmentsCollect,
+        ch_alignmentsCollect.bam.collect(),
+        ch_alignmentsCollect.toolIDs.first(),
         ch_mergePeaksSAF,
         inName
     )
-
+    ch_countFeatureCounts = CountFeatureCounts.out.featCountsSummary
 
     /*
     ---------------------------------------------------------------------
@@ -429,6 +439,12 @@ workflow sralign {
         .concat(ch_contaminantFlagstat)
         .concat(ch_preseqLcExtrap)
         .concat(ch_peaksXls)
+        .concat(
+            ch_countFeatureCounts
+                .map {
+                    it[0]
+                }
+        )
 
     FullMultiQC(
         inName,
