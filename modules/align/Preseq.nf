@@ -14,7 +14,7 @@ process Preseq {
     publishDir "${params.baseDirData}/align/preseq", mode: 'copy', pattern: '*.txt'
 
     input:
-        tuple val(metadata), path(bam), val(toolIDs)
+        tuple val(metadata), path(bam), path(bai), val(toolIDs)
 
     output:
         path '*_psL.txt', emit: psL

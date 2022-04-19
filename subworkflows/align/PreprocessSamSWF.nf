@@ -23,6 +23,5 @@ workflow PreprocessSamSWF {
         )
 
     emit:
-        bam    = CompressSortSam.out.bam
         bamBai = IndexBam.out.bamBai
 }
