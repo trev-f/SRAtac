@@ -14,7 +14,8 @@ process MergePeaksHomer {
     publishDir "${params.baseDirData}/peaks/merge", mode: 'copy', pattern: '*-venn.txt'
 
     input:
-        tuple path(peaksFiles), val(toolIDs)
+        path peaksFiles
+        val toolIDs
         val inName
         val effectiveGenomeSize
 

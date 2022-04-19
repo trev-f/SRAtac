@@ -96,7 +96,6 @@ include { FullMultiQC           as FullMultiQC        } from "${baseDir}/modules
 
 
 workflow sralign {
-
     /*
     ---------------------------------------------------------------------
         Read design file, parse sample names and identifiers, and stage reads files
@@ -107,7 +106,8 @@ workflow sralign {
     ParseDesign(
         ch_input
     )
-    ch_rawReads = ParseDesign.out.rawReads
+    ch_rawReads         = ParseDesign.out.reads
+    ch_bamIndexedGenome = ParseDesign.out.bamBai
 
 
     /*
@@ -204,14 +204,13 @@ workflow sralign {
                 )
                 ch_samGenome = AlignHisat2.out.sam
                 break
-        }
-    
+    }
 
+    // Preprocess sam files: mark duplicates, sort alignments, compress to bam, and index
     PreprocessSam(
         ch_samGenome
     )
-    ch_bamGenome        = PreprocessSam.out.bam
-    ch_bamIndexedGenome = PreprocessSam.out.bamBai
+    ch_bamIndexedGenome = PreprocessSam.out.bamBai.mix(ch_bamIndexedGenome)
 
 
     if (!params.skipSamStatsQC) {
@@ -289,13 +288,11 @@ workflow sralign {
     // Preseq
     if (!params.skipPreseq) {
         Preseq(
-            ch_bamGenome
+            ch_bamIndexedGenome
         )
         ch_preseqLcExtrap = Preseq.out.psL
-        ch_psRealCounts   = Preseq.out.psRealCounts
     } else {
         ch_preseqLcExtrap = Channel.empty()
-        ch_psRealCounts   = Channel.empty()
     }
 
 
@@ -357,15 +354,29 @@ workflow sralign {
     // collect peaks files
     ch_peaksCollect =
         ch_peaksNarrowPeak
-        .map { it[1, 2] }
-        .groupTuple( by: 1 )
+        .multiMap {
+            it ->
+            peaks:   it[1]
+            toolIDs: it[2]
+        }
+        
+    ch_peaksCollect
+        .peaks
+        .collect()
+        .set { ch_peaksCollectPeaks }
+
+    ch_peaksCollect
+        .toolIDs
+        .first()
+        .set { ch_peaksCollectToolIDs }
 
     if (!params.skipMergePeaks) {
         switch (params.mergePeaksTool) {
             // merge peaks with homer merge peaks
             case 'homer':
                 MergePeaksHomer(
-                    ch_peaksCollect,
+                    ch_peaksCollectPeaks,
+                    ch_peaksCollectToolIDs,
                     inName,
                     genome[ 'effectiveGenomeSize' ]
                 )
@@ -417,7 +428,6 @@ workflow sralign {
         .concat(ch_alignGenomePctDup)
         .concat(ch_contaminantFlagstat)
         .concat(ch_preseqLcExtrap)
-        .concat(ch_psRealCounts)
         .concat(ch_peaksXls)
 
     FullMultiQC(
