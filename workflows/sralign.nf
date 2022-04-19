@@ -353,15 +353,29 @@ workflow sralign {
     // collect peaks files
     ch_peaksCollect =
         ch_peaksNarrowPeak
-        .map { it[1, 2] }
-        .groupTuple( by: 1 )
+        .multiMap {
+            it ->
+            peaks:   it[1]
+            toolIDs: it[2]
+        }
+        
+    ch_peaksCollect
+        .peaks
+        .collect()
+        .set { ch_peaksCollectPeaks }
+
+    ch_peaksCollect
+        .toolIDs
+        .first()
+        .set { ch_peaksCollectToolIDs }
 
     if (!params.skipMergePeaks) {
         switch (params.mergePeaksTool) {
             // merge peaks with homer merge peaks
             case 'homer':
                 MergePeaksHomer(
-                    ch_peaksCollect,
+                    ch_peaksCollectPeaks,
+                    ch_peaksCollectToolIDs,
                     inName,
                     genome[ 'effectiveGenomeSize' ]
                 )
