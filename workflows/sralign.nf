@@ -91,6 +91,7 @@ include { BamCoverage           as BamCoverage        } from "${baseDir}/modules
 include { CallPeaksMacs2SWF     as CallPeaksMacs2     } from "${baseDir}/subworkflows/peaks/CallPeaksMacs2SWF.nf"
 include { MergePeaksHomer       as MergePeaksHomer    } from "${baseDir}/modules/peaks/MergePeaksHomer.nf"
 include { ConvertMergedPeaks    as ConvertMergedPeaks } from "${projectDir}/modules/peaks/ConvertMergedPeaks.nf"
+include { CountFeatureCounts    as CountFeatureCounts } from "${projectDir}/modules/counts/CountFeatureCounts.nf"
 include { FullMultiQC           as FullMultiQC        } from "${baseDir}/modules/misc/FullMultiQC.nf"
 
 
@@ -369,6 +370,11 @@ workflow sralign {
         .first()
         .set { ch_peaksCollectToolIDs }
 
+    ch_peaksCollect
+        .peaks
+        .collect()
+        .combine(ch_peaksCollect.toolIDs)
+
     if (!params.skipMergePeaks) {
         switch (params.mergePeaksTool) {
             // merge peaks with homer merge peaks
@@ -390,7 +396,32 @@ workflow sralign {
         inName,
         params.mergePeaksTool
     )
+    ch_mergePeaksSAF = ConvertMergedPeaks.out.mergedPeaks
 
+
+    /*
+    ---------------------------------------------------------------------
+        Reads counts matrix
+    ---------------------------------------------------------------------
+    */
+
+    // produce reads counts matrix
+    ch_alignmentsCollect = 
+        ch_alignments
+        .multiMap {
+            it ->
+            bam:     it[1]
+            bai:     it[2]
+            toolIDs: it[3]
+        }
+    
+    CountFeatureCounts(
+        ch_alignmentsCollect.bam.collect(),
+        ch_alignmentsCollect.toolIDs.first(),
+        ch_mergePeaksSAF,
+        inName
+    )
+    ch_countFeatureCounts = CountFeatureCounts.out.featCountsSummary
 
     /*
     ---------------------------------------------------------------------
@@ -408,6 +439,12 @@ workflow sralign {
         .concat(ch_contaminantFlagstat)
         .concat(ch_preseqLcExtrap)
         .concat(ch_peaksXls)
+        .concat(
+            ch_countFeatureCounts
+                .map {
+                    it[0]
+                }
+        )
 
     FullMultiQC(
         inName,
