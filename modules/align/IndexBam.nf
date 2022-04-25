@@ -7,6 +7,8 @@ Purpose: Nextflow module
 process IndexBam {
     tag "${metadata.sampleName}"
 
+    label 'cpu_mid'
+
     container 'quay.io/biocontainers/samtools:1.15--h1170115_1'
 
     publishDir "${params.baseDirData}/align", mode: 'copy', pattern: '*.bai'
@@ -19,6 +21,8 @@ process IndexBam {
 
     script:
         """
-        samtools index -b ${bam}
+        samtools index \
+            -@ ${task.cpus} \
+            -b ${bam}
         """
 }

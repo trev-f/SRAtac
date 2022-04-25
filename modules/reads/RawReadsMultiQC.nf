@@ -1,4 +1,6 @@
 process ReadsMultiQC {
+    tag "${outName}"
+
     container 'ewels/multiqc:v1.11'
 
     publishDir "${params.baseDirReport}/readsQC/raw", mode: 'copy', pattern: '*.html'
@@ -6,7 +8,7 @@ process ReadsMultiQC {
 
     input:
         file fastqc
-        val runName
+        val outName
         val toolIDs
 
     output:
@@ -19,7 +21,7 @@ process ReadsMultiQC {
 
         """
         multiqc \
-            -n ${runName}${suffix} \
+            -n ${outName}${suffix} \
             --module fastqc \
             ${fastqc}
         """

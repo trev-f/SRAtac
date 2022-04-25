@@ -5,7 +5,7 @@ Purpose: Nextflow module
 */
 
 process SamStatsMultiQC {
-    tag "${runName}"
+    tag "${outName}"
 
     container 'ewels/multiqc:v1.11'
 
@@ -15,7 +15,7 @@ process SamStatsMultiQC {
     input:
         file sST
         file sIX
-        val runName
+        val outName
         val toolIDs
 
     output:
@@ -29,7 +29,7 @@ process SamStatsMultiQC {
 
         """
         multiqc \
-            -n ${runName}${suffix} \
+            -n ${outName}${suffix} \
             --module samtools \
             ${sST} \
             ${sIX}

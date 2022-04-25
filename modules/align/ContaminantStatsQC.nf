@@ -5,7 +5,7 @@ Purpose: samtools flagstat multiQC report
 */
 
 process ContaminantStatsQC {
-    tag "${runName}"
+    tag "${outName}"
 
     container 'ewels/multiqc:v1.11'
 
@@ -14,7 +14,7 @@ process ContaminantStatsQC {
 
     input:
         file sFS
-        val runName
+        val outName
         val toolIDs
 
     output:
@@ -27,7 +27,7 @@ process ContaminantStatsQC {
 
         """
         multiqc \
-            -n ${runName}${suffix} \
+            -n ${outName}${suffix} \
             --module samtools \
             ${sFS}
         """
