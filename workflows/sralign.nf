@@ -12,8 +12,9 @@
 */
 
 def tools = [
-    trim      : ['fastp'],
-    alignment : ['bowtie2', 'hisat2']
+    trim       : ['fastp'],
+    alignment  : ['bowtie2', 'hisat2'],
+    mergePeaks : ['homer']
 ]
 
 // check valid read-trimming tool
@@ -23,6 +24,10 @@ assert params.trimTool in tools.trim ,
 // check valid alignment tool
 assert params.alignmentTool in tools.alignment , 
     "'${params.alignmentTool}' is not a valid alignment tool.\n\tValid options: ${tools.alignment.join(', ')}\n\t"
+
+// check valid peak merging tool
+assert params.mergePeaksTool in tools.mergePeaks,
+    "'${params.mergePeaksTool} is not a valied peak-merging tool.\n\tValid options: ${tools.mergePeaks.join(', ')}\n\t'"
 
 ch_multiqcConfig = file(params.multiqcConfig, checkIfExists: true)
 
@@ -42,6 +47,9 @@ if (params.input) {
 
 // set input design name
 inName = params.input.take(params.input.lastIndexOf('.')).split('/')[-1]
+
+// set workflow prefix name to be used for output files that combine all files (i.e. only one output file such as the full MultiQC)
+wfPrefix = "${inName}_-_${workflow.runName}_-_${workflow.start}"
 
 
 /*
@@ -68,27 +76,30 @@ contaminant = params.genomes[ params.contaminant ]
 =====================================================================
 */
 
-include { ParseDesignSWF        as ParseDesign        } from '../subworkflows/ParseDesignSWF.nf'
-include { RawReadsQCSWF         as RawReadsQC         } from '../subworkflows/RawReadsQCSWF.nf'
-include { TrimReadsSWF          as TrimReads          } from '../subworkflows/TrimReadsSWF.nf'
-include { TrimReadsQCSWF        as TrimReadsQC        } from '../subworkflows/TrimReadsQCSWF.nf'
+include { ParseDesignSWF        as ParseDesign        } from "${baseDir}/subworkflows/inputs/ParseDesignSWF.nf"
+include { RawReadsQCSWF         as RawReadsQC         } from "${baseDir}/subworkflows/reads/RawReadsQCSWF.nf"
+include { TrimReadsSWF          as TrimReads          } from "${baseDir}/subworkflows/reads/TrimReadsSWF.nf"
+include { TrimReadsQCSWF        as TrimReadsQC        } from "${baseDir}/subworkflows/reads/TrimReadsQCSWF.nf"
 include { AlignBowtie2SWF       as AlignBowtie2       ; 
-          AlignBowtie2SWF       as ContamBowtie2      } from '../subworkflows/AlignBowtie2SWF.nf'
+          AlignBowtie2SWF       as ContamBowtie2      } from "${baseDir}/subworkflows/align/AlignBowtie2SWF.nf"
 include { AlignHisat2SWF        as AlignHisat2        ; 
-          AlignHisat2SWF        as ContamHisat2       } from '../subworkflows/AlignHisat2SWF.nf'
-include { PreprocessSamSWF      as PreprocessSam      } from '../subworkflows/PreprocessSamSWF.nf'
-include { SamStatsQCSWF         as SamStatsQC         } from '../subworkflows/SamStatsQCSWF.nf'
-include { SeqtkSample           as SeqtkSample        } from '../modules/SeqtkSample.nf'
-include { ContaminantStatsQCSWF as ContaminantStatsQC } from '../subworkflows/ContaminantStatsQCSWF.nf'
-include { FullMultiQC           as FullMultiQC        } from '../modules/FullMultiQC.nf'
-include { PreseqSWF             as Preseq             } from '../subworkflows/PreseqSWF.nf'
-include { SambambaFilterBam     as SambambaFilterBam  } from '../modules/SambambaFilterBam.nf'
-include { BamCoverage           as BamCoverage        } from '../modules/BamCoverage.nf'
-include { CallPeaksMacs2SWF     as CallPeaksMacs2     } from '../subworkflows/CallPeaksMacs2SWF.nf'
+          AlignHisat2SWF        as ContamHisat2       } from "${baseDir}/subworkflows/align/AlignHisat2SWF.nf"
+include { PreprocessSamSWF      as PreprocessSam      } from "${baseDir}/subworkflows/align/PreprocessSamSWF.nf"
+include { SamStatsQCSWF         as SamStatsQC         } from "${baseDir}/subworkflows/align/SamStatsQCSWF.nf"
+include { SeqtkSample           as SeqtkSample        } from "${baseDir}/modules/reads/SeqtkSample.nf"
+include { ContaminantStatsQCSWF as ContaminantStatsQC } from "${baseDir}/subworkflows/align/ContaminantStatsQCSWF.nf"
+include { PreseqSWF             as Preseq             } from "${baseDir}/subworkflows/align/PreseqSWF.nf"
+include { SambambaFilterBam     as SambambaFilterBam  } from "${baseDir}/modules/align/SambambaFilterBam.nf"
+include { BamCoverage           as BamCoverage        } from "${baseDir}/modules/coverage/BamCoverage.nf"
+include { CallPeaksMacs2SWF     as CallPeaksMacs2     } from "${baseDir}/subworkflows/peaks/CallPeaksMacs2SWF.nf"
+include { MergePeaksHomer       as MergePeaksHomer    } from "${baseDir}/modules/peaks/MergePeaksHomer.nf"
+include { ConvertMergedPeaks    as ConvertMergedPeaks } from "${projectDir}/modules/peaks/ConvertMergedPeaks.nf"
+include { CountFeatureCounts    as CountFeatureCounts } from "${projectDir}/modules/counts/CountFeatureCounts.nf"
+include { DeepToolsMultiBamSWF  as DeepToolsMultiBam  } from "${projectDir}/subworkflows/align/DeepToolsMultiBamSWF.nf"
+include { FullMultiQC           as FullMultiQC        } from "${baseDir}/modules/misc/FullMultiQC.nf"
 
 
 workflow sralign {
-
     /*
     ---------------------------------------------------------------------
         Read design file, parse sample names and identifiers, and stage reads files
@@ -99,7 +110,8 @@ workflow sralign {
     ParseDesign(
         ch_input
     )
-    ch_rawReads = ParseDesign.out.rawReads
+    ch_rawReads         = ParseDesign.out.reads
+    ch_bamIndexedGenome = ParseDesign.out.bamBai
 
 
     /*
@@ -112,7 +124,7 @@ workflow sralign {
         // Subworkflow: Raw reads fastqc and mulitqc
         RawReadsQC(
             ch_rawReads,
-            inName
+            wfPrefix
         )
         ch_rawReadsFQC = RawReadsQC.out.fqc_zip
     } else {
@@ -144,7 +156,7 @@ workflow sralign {
             // Subworkflow: Trimmed reads fastqc and multiqc
             TrimReadsQC(
                 ch_trimReads,
-                inName
+                wfPrefix
             ) 
             ch_trimReadsFQC = TrimReadsQC.out.fqc_zip
         } else {
@@ -196,21 +208,20 @@ workflow sralign {
                 )
                 ch_samGenome = AlignHisat2.out.sam
                 break
-        }
-    
+    }
 
+    // Preprocess sam files: mark duplicates, sort alignments, compress to bam, and index
     PreprocessSam(
         ch_samGenome
     )
-    ch_bamGenome        = PreprocessSam.out.bam
-    ch_bamIndexedGenome = PreprocessSam.out.bamBai
+    ch_bamIndexedGenome = PreprocessSam.out.bamBai.mix(ch_bamIndexedGenome)
 
 
     if (!params.skipSamStatsQC) {
         // Subworkflow: Samtools stats and samtools idxstats and multiqc of alignment results
         SamStatsQC(
             ch_bamIndexedGenome,
-            inName
+            wfPrefix
         )
         ch_alignGenomeStats    = SamStatsQC.out.samtoolsStats
         ch_alignGenomeIdxstats = SamStatsQC.out.samtoolsIdxstats
@@ -265,7 +276,7 @@ workflow sralign {
         // Get contaminant alignment stats
         ContaminantStatsQC(
             ch_samContaminant,
-            inName
+            wfPrefix
         )
         ch_contaminantFlagstat = ContaminantStatsQC.out.samtoolsFlagstat
     } else {
@@ -281,14 +292,31 @@ workflow sralign {
     // Preseq
     if (!params.skipPreseq) {
         Preseq(
-            ch_bamGenome
+            ch_bamIndexedGenome
         )
         ch_preseqLcExtrap = Preseq.out.psL
-        ch_psRealCounts   = Preseq.out.psRealCounts
     } else {
         ch_preseqLcExtrap = Channel.empty()
-        ch_psRealCounts   = Channel.empty()
     }
+
+    // deepTools
+    ch_alignments = ch_bamIndexedGenome
+    ch_alignmentsCollect = 
+        ch_alignments
+        .multiMap {
+            it ->
+            bam:     it[1]
+            bai:     it[2]
+            toolIDs: it[3]
+        }
+
+    DeepToolsMultiBam(
+        ch_alignmentsCollect.bam.collect(),
+        ch_alignmentsCollect.bai.collect(),
+        wfPrefix
+    )
+    ch_corMatrix = DeepToolsMultiBam.out.corMatrix
+    ch_PCAMatrix = DeepToolsMultiBam.out.PCAMatrix
 
 
     /*
@@ -346,6 +374,78 @@ workflow sralign {
         ch_peaksXls        = CallPeaksMacs2.out.xls
     }
 
+    // collect peaks files
+    ch_peaksCollect =
+        ch_peaksNarrowPeak
+        .multiMap {
+            it ->
+            peaks:   it[1]
+            toolIDs: it[2]
+        }
+        
+    ch_peaksCollect
+        .peaks
+        .collect()
+        .set { ch_peaksCollectPeaks }
+
+    ch_peaksCollect
+        .toolIDs
+        .first()
+        .set { ch_peaksCollectToolIDs }
+
+    ch_peaksCollect
+        .peaks
+        .collect()
+        .combine(ch_peaksCollect.toolIDs)
+
+    if (!params.skipMergePeaks) {
+        switch (params.mergePeaksTool) {
+            // merge peaks with homer merge peaks
+            case 'homer':
+                MergePeaksHomer(
+                    ch_peaksCollectPeaks,
+                    ch_peaksCollectToolIDs,
+                    inName,
+                    genome[ 'effectiveGenomeSize' ]
+                )
+                ch_mergePeaks = MergePeaksHomer.out.mergePeaks
+                break
+        }
+    }
+
+    // convert merged peaks
+    ConvertMergedPeaks(
+        ch_mergePeaks,
+        inName,
+        params.mergePeaksTool
+    )
+    ch_mergePeaksSAF = ConvertMergedPeaks.out.mergedPeaks
+
+
+    /*
+    ---------------------------------------------------------------------
+        Reads counts matrix
+    ---------------------------------------------------------------------
+    */
+
+    // produce reads counts matrix
+    ch_alignmentsCollect = 
+        ch_alignments
+        .multiMap {
+            it ->
+            bam:     it[1]
+            bai:     it[2]
+            toolIDs: it[3]
+        }
+    
+    CountFeatureCounts(
+        ch_alignmentsCollect.bam.collect(),
+        ch_alignmentsCollect.toolIDs.first(),
+        ch_mergePeaksSAF,
+        inName
+    )
+    ch_countFeatureCounts = CountFeatureCounts.out.featCountsSummary
+
     /*
     ---------------------------------------------------------------------
         Full pipeline MultiQC
@@ -361,8 +461,15 @@ workflow sralign {
         .concat(ch_alignGenomePctDup)
         .concat(ch_contaminantFlagstat)
         .concat(ch_preseqLcExtrap)
-        .concat(ch_psRealCounts)
         .concat(ch_peaksXls)
+        .concat(
+            ch_countFeatureCounts
+                .map {
+                    it[0]
+                }
+        )
+        .concat(ch_corMatrix)
+        .concat(ch_PCAMatrix)
 
     FullMultiQC(
         inName,

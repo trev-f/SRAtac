@@ -4,15 +4,19 @@ run_modules:
   - fastqc
   - samtools
   - preseq
+  - deeptools
   - custom_content
   - macs2
+  - featureCounts
 
 module_order:
   - fastqc
   - samtools
   - preseq
+  - deeptools
   - custom_content
   - macs2
+  - featureCounts
 
 custom_data:
   insert_size:

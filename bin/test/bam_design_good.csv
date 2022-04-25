@@ -1,0 +1,5 @@
+lib_ID,sample_name,replicate,bam,tool_IDs
+HSL-1,wt_control,1,data/HSL-1.bam,bt2_sSR
+HSL-2,wt_control,2,data/HSL-2.bam,bt2_sSR
+HSL-3,wt_DMSO,1,data/HSL-3.bam,bwM
+HSL-4,wt_DMSO,2,data/HSL-4.bam,

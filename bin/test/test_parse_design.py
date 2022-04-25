@@ -52,13 +52,26 @@ def test_single_end():
     """single end"""
 
     rv, out = getstatusoutput(f'{prg} SE_design_good.csv')
+    
+    # check status
     assert rv == 0
-    expected = ('lib_ID,sample_rep,fq1\n'
-                'HSL-1,wt_control_rep1,data/HSL-1_R1.fastq.gz\n'
-                'HSL-2,wt_control_rep2,data/HSL-2_R1.fastq.gz\n'
-                'HSL-3,wt_DMSO_rep1,data/HSL-3_R1.fastq.gz\n'
-                'HSL-4,wt_DMSO_rep2,data/HSL-4_R1.fastq.gz')
-    assert out.strip() == expected
+    assert out == ''
+
+    # check output file
+    expected = (
+        'lib_ID,sample_rep,fq1\n'
+        'HSL-1,wt_control_rep1,data/HSL-1_R1.fastq.gz\n'
+        'HSL-2,wt_control_rep2,data/HSL-2_R1.fastq.gz\n'
+        'HSL-3,wt_DMSO_rep1,data/HSL-3_R1.fastq.gz\n'
+        'HSL-4,wt_DMSO_rep2,data/HSL-4_R1.fastq.gz'
+    )
+    out_file = 'SE_design_good_parsed.csv'
+    out_text = open(out_file).read().rstrip()
+    assert out_text == expected
+
+    # cleanup
+    if os.path.isfile(out_file):
+        os.remove(out_file)
 
 
 # --------------------------------------------------
@@ -66,10 +79,51 @@ def test_paired_end():
     """paired end"""
 
     rv, out = getstatusoutput(f'{prg} PE_design_good.csv')
+
+    # check status
     assert rv == 0
-    expected = ('lib_ID,sample_rep,fq1,fq2\n'
-                'HSL-1,wt_control_rep1,data/HSL-1_R1.fastq.gz,data/HSL-1_R2.fastq.gz\n'
-                'HSL-2,wt_control_rep2,data/HSL-2_R1.fastq.gz,data/HSL-2_R2.fastq.gz\n'
-                'HSL-3,wt_DMSO_rep1,data/HSL-3_R1.fastq.gz,data/HSL-3_R2.fastq.gz\n'
-                'HSL-4,wt_DMSO_rep2,data/HSL-4_R1.fastq.gz,data/HSL-4_R2.fastq.gz')
-    assert out.strip() == expected
+    assert out == ''
+
+    # check output file
+    expected = (
+        'lib_ID,sample_rep,fq1,fq2\n'
+        'HSL-1,wt_control_rep1,data/HSL-1_R1.fastq.gz,data/HSL-1_R2.fastq.gz\n'
+        'HSL-2,wt_control_rep2,data/HSL-2_R1.fastq.gz,data/HSL-2_R2.fastq.gz\n'
+        'HSL-3,wt_DMSO_rep1,data/HSL-3_R1.fastq.gz,data/HSL-3_R2.fastq.gz\n'
+        'HSL-4,wt_DMSO_rep2,data/HSL-4_R1.fastq.gz,data/HSL-4_R2.fastq.gz'
+    )
+    out_file = 'PE_design_good_parsed.csv'
+    out_text = open(out_file).read().rstrip()
+    assert out_text == expected
+
+    # cleanup
+    if os.path.isfile(out_file):
+        os.remove(out_file)
+
+
+# --------------------------------------------------
+def test_bam():
+    """bam"""
+
+    rv, out = getstatusoutput(f'{prg} bam_design_good.csv')
+
+    # check status
+    assert rv == 0
+    assert out == ''
+
+    # check output file
+    expected = (
+        'lib_ID,sample_rep,bam,tool_IDs\n'
+        'HSL-1,wt_control_rep1,data/HSL-1.bam,bt2_sSR\n'
+        'HSL-2,wt_control_rep2,data/HSL-2.bam,bt2_sSR\n'
+        'HSL-3,wt_DMSO_rep1,data/HSL-3.bam,bwM\n'
+        'HSL-4,wt_DMSO_rep2,data/HSL-4.bam,'
+    )
+    out_file = 'bam_design_good_parsed.csv'
+    out_text = open(out_file).read().rstrip()
+    assert out_text == expected
+
+    # cleanup
+    if os.path.isfile(out_file):
+        os.remove(out_file)
+    
