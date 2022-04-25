@@ -2,6 +2,7 @@ process Fastp {
     tag "${metadata.sampleName}"
 
     label 'mem_mid'
+    label 'cpu_mid'
 
     container 'quay.io/biocontainers/fastp:0.23.2--h79da9fb_0'
 
@@ -22,6 +23,7 @@ process Fastp {
 
             """
             fastp \
+                --thread ${task.cpus} \
                 ${adapterTrim} \
                 -i ${reads} \
                 -o ${metadata.sampleName}${suffix}_R1.fastq.gz
@@ -33,6 +35,7 @@ process Fastp {
 
             """
             fastp \
+                --thread ${task.cpus} \
                 ${adapterTrimR1} \
                 ${adapterTrimR2} \
                 -i ${reads[0]} \

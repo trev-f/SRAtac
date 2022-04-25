@@ -4,7 +4,7 @@ include { ContaminantStatsQC } from "${baseDir}/modules/align/ContaminantStatsQC
 workflow ContaminantStatsQCSWF {
     take:
         sam
-        runName
+        prefix
 
     main:
         SamtoolsFlagstat(
@@ -12,7 +12,7 @@ workflow ContaminantStatsQCSWF {
         )
         ContaminantStatsQC(
             SamtoolsFlagstat.out.sFS.collect(),
-            runName,
+            prefix,
             SamtoolsFlagstat.out.tools.first()
         )
     

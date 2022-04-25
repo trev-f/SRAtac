@@ -7,6 +7,8 @@ Purpose: Nextflow module
 process CompressSortSam {
     tag "${metadata.sampleName}"
 
+    label 'cpu_mid'
+
     container 'quay.io/biocontainers/samtools:1.15--h1170115_1'
 
     publishDir "${params.baseDirData}/align", mode: 'copy', pattern: '*.bam'
@@ -23,7 +25,13 @@ process CompressSortSam {
         suffix = toolIDs ? "__${toolIDs.join('_')}" : ''
 
         """
-        samtools view -bh ${sam} | \
-        samtools sort -o ${metadata.sampleName}${suffix}.bam -
+        samtools view \
+            --threads ${task.cpus} \
+            -uh \
+            ${sam} | \
+        samtools sort \
+            -@ ${task.cpus} \
+            -o ${metadata.sampleName}${suffix}.bam \
+            -
         """
 }
