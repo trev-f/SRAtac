@@ -48,8 +48,11 @@ if (params.input) {
 // set input design name
 inName = params.input.take(params.input.lastIndexOf('.')).split('/')[-1]
 
+// set a timestamp
+timeStamp = new java.util.Date().format('yyyy-MM-dd_HH-mm')
+
 // set workflow prefix name to be used for output files that combine all files (i.e. only one output file such as the full MultiQC)
-wfPrefix = "${inName}_-_${workflow.runName}_-_${workflow.start}"
+wfPrefix = "${inName}_-_${workflow.runName}_-_${timeStamp}"
 
 
 /*
