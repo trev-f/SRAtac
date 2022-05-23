@@ -368,13 +368,16 @@ workflow sralign {
     */
 
     // call peaks
-    if (!params.skipPeakCalling) {
+    if (!params.skipPeakCalling) {      // call peaks unless skip option selected
         CallPeaksMacs2(
             ch_alignments,
             genome[ 'effectiveGenomeSize' ]
         )
         ch_peaksNarrowPeak = CallPeaksMacs2.out.narrowPeak
         ch_peaksXls        = CallPeaksMacs2.out.xls
+    } else {                            // create empty channels if call peaks skipped
+        ch_peaksNarrowPeak = Channel.empty()
+        ch_peaksXls        = Channel.empty()
     }
 
     // collect peaks files
