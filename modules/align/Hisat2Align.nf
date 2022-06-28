@@ -46,4 +46,13 @@ process Hisat2Align {
             ${argReads} \
             -S ${metadata.sampleName}${suffix}.sam
         """
+    
+    stub:
+        // update toolID and set suffix
+        toolIDs += "ht2-${refName}"
+        suffix = toolIDs ? "__${toolIDs.join('_')}" : ''
+
+        """
+        touch ${metadata.sampleName}${suffix}.sam
+        """
 }

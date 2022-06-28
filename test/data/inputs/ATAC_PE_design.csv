@@ -1,3 +1,0 @@
-lib_ID,sample_name,replicate,reads1,reads2
-SRR5860427,hmg-3,1,data/reads/raw/SRR5860427_GSM2715417_hmg-3_rep1_Caenorhabditis_elegans_ATAC-seq_200000_R1.fastq.gz,data/reads/raw/SRR5860427_GSM2715417_hmg-3_rep1_Caenorhabditis_elegans_ATAC-seq_200000_R2.fastq.gz
-SRR5860428,hmg-3,2,data/reads/raw/SRR5860428_GSM2715418_hmg-3_rep2_Caenorhabditis_elegans_ATAC-seq_200000_R1.fastq.gz,data/reads/raw/SRR5860428_GSM2715418_hmg-3_rep2_Caenorhabditis_elegans_ATAC-seq_200000_R2.fastq.gz

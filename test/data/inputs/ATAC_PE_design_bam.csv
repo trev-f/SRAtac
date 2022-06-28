@@ -1,3 +1,0 @@
-lib_ID,sample_name,replicate,bam,tool_IDs
-SRR5860427,hmg-3,1,data/align/hmg-3_rep1__fsp_bt2-testWBcel235_sbl_sSR.bam,fsp_bt2-testWBcel235_sbl_sSR
-SRR5860428,hmg-3,2,data/align/hmg-3_rep2__fsp_bt2-testWBcel235_sbl_sSR.bam,fsp_bt2-testWBcel235_sbl_sSR

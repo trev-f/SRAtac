@@ -48,4 +48,15 @@ process DeepToolsMultiBamSummary {
             ${task.ext.args.plotPCA} \
             --outFileNameData ${outName}${suffix}_dPP.tab
         """
+    
+    stub:
+        toolIDs = []
+        toolIDs += 'dBS'
+        suffix = toolIDs ? "__${toolIDs.join('_')}" : ''
+
+        """
+        touch ${outName}${suffix}.npz
+        touch ${outName}${suffix}_dPC.txt
+        touch ${outName}${suffix}_dPP.tab
+        """
 }
