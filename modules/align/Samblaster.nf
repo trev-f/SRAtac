@@ -29,4 +29,13 @@ process Samblaster {
             -i ${sam} \
             -o ${metadata.sampleName}${suffix}.sam
         """
+    
+    stub:
+        // update toolID and set suffix
+        toolIDs += 'sbl'
+        suffix = toolIDs ? "__${toolIDs.join('_')}" : ''
+
+        """
+        touch ${metadata.sampleName}${suffix}.sam
+        """
 }

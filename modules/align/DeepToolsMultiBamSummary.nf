@@ -5,7 +5,7 @@ Purpose: Compute read coverages for BAMs
 */
 
 process DeepToolsMultiBamSummary {
-    tag "${}"
+    tag "${outName}"
 
     label 'mem_mid'
     label 'cpu_mid'
@@ -47,5 +47,16 @@ process DeepToolsMultiBamSummary {
             -in ${outName}${suffix}.npz \
             ${task.ext.args.plotPCA} \
             --outFileNameData ${outName}${suffix}_dPP.tab
+        """
+    
+    stub:
+        toolIDs = []
+        toolIDs += 'dBS'
+        suffix = toolIDs ? "__${toolIDs.join('_')}" : ''
+
+        """
+        touch ${outName}${suffix}.npz
+        touch ${outName}${suffix}_dPC.txt
+        touch ${outName}${suffix}_dPP.tab
         """
 }

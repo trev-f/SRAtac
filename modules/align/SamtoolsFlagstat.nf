@@ -25,4 +25,12 @@ process SamtoolsFlagstat {
         """
         samtools flagstat ${bam} > ${metadata.sampleName}${suffix}.txt
         """
+
+    stub:
+        toolIDs += 'sFS'
+        suffix = toolIDs ? "__${toolIDs.join('_')}" : ''
+
+        """
+        touch ${metadata.sampleName}${suffix}.txt
+        """
 }

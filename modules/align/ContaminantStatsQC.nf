@@ -10,7 +10,7 @@ process ContaminantStatsQC {
     container 'ewels/multiqc:v1.11'
 
     publishDir "${params.baseDirReport}/align", mode: 'copy', pattern: '*.html'
-    publishDir "${params.baseDirData}/align", mode: 'copy', pattern: '*multiqc_data*'
+    publishDir "${params.baseDirData}/align", mode: 'copy', pattern: '*mqc-contaminant_data*'
 
     input:
         file sFS
@@ -22,7 +22,7 @@ process ContaminantStatsQC {
 
     script:
         // update toolID and set suffix
-        toolIDs += 'mqc'
+        toolIDs += 'mqc-contaminant'
         suffix = toolIDs ? "__${toolIDs.join('_')}" : ''
 
         """
@@ -30,5 +30,13 @@ process ContaminantStatsQC {
             -n ${outName}${suffix} \
             --module samtools \
             ${sFS}
+        """
+    
+    stub:
+        toolIDs += 'mqc-contaminant'
+        suffix = toolIDs ? "__${toolIDs.join('_')}" : ''
+
+        """
+        touch ${outName}${suffix}.html
         """
 }
