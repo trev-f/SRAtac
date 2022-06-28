@@ -5,20 +5,6 @@
 */
 
 /*
-    ---------------------------------------------------------------------
-    Tools
-    ---------------------------------------------------------------------
-*/
-
-def tools = [
-    mergePeaks : ['homer']
-]
-
-// check valid peak merging tool
-assert params.mergePeaksTool in tools.mergePeaks,
-    "'${params.mergePeaksTool} is not a valied peak-merging tool.\n\tValid options: ${tools.mergePeaks.join(', ')}\n\t'"
-
-/*
 This object takes care of many necessary steps upon construction:
     - Logs a header for the pipeline that prints pipeline name and logo
     - Prints a help message if help parameter is specified
