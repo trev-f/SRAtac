@@ -16,8 +16,8 @@ nextflow.enable.dsl=2
 ---------------------------------------------------------------------
 */
 
-include { SRAlign } from './workflows/SRAlign.nf'
+include { SRAtac } from './workflows/SRAtac.nf'
 
 workflow {
-    SRAlign()
+    SRAtac()
 }

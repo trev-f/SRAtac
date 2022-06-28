@@ -34,23 +34,24 @@ class SRAlignWorkflow {
     // pipeline ASCII logo
     public static final String pipelineLogo = (
         """
-         ######  ########     ###    ##       ####  ######   ##    ## 
-        ##    ## ##     ##   ## ##   ##        ##  ##    ##  ###   ## 
-        ##       ##     ##  ##   ##  ##        ##  ##        ####  ## 
-         ######  ########  ##     ## ##        ##  ##   #### ## ## ## 
-              ## ##   ##   ######### ##        ##  ##    ##  ##  #### 
-        ##    ## ##    ##  ##     ## ##        ##  ##    ##  ##   ### 
-         ######  ##     ## ##     ## ######## ####  ######   ##    ## 
+         ######  ########     ###    ########    ###     ######  
+        ##    ## ##     ##   ## ##      ##      ## ##   ##    ## 
+        ##       ##     ##  ##   ##     ##     ##   ##  ##       
+         ######  ########  ##     ##    ##    ##     ## ##       
+              ## ##   ##   #########    ##    ######### ##       
+        ##    ## ##    ##  ##     ##    ##    ##     ## ##    ## 
+         ######  ##     ## ##     ##    ##    ##     ##  ######  
+
         """
     )
 
     // pipeline name
-    public static final String pipelineName = "trev-f/SRAlign"
+    public static final String pipelineName = "trev-f/SRAtac"
 
     // purpose statement
     public static final String purpose = (
         """
-        A flexible pipeline for short read alignment to a reference with extensive QC reporting.
+        A pipeline for ATAC-seq data analysis built on SRAlign.
         """
     )
 
@@ -68,7 +69,7 @@ class SRAlignWorkflow {
     // usage statement
     public static final String usage = (
         """
-        nextflow run trev-f/SRAlign -profile docker --input <input.csv> --genome <valid genome key>
+        nextflow run trev-f/SRAtac -profile docker --input <input.csv> --genome <valid genome key>
         """
     )
 

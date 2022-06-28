@@ -37,17 +37,17 @@ A pipeline for ATAC-seq data analysis built on SRAlign.
 
 1. [Install Nextflow](https://www.nextflow.io/docs/latest/getstarted.html)
 2. [Install Docker](https://docs.docker.com/engine/install/)
-3. Download **SRAlign**:
+3. Download **SRAtac**:
     ```
-    git clone https://github.com/trev-f/SRAlign.git
+    nextflow pull trev-f/SRAtac
     ```
-4. Run **SRAlign** in test mode:
+4. Run **SRAtac** in test mode:
     ```
-    nextflow run SRAlign -profile test 
+    nextflow run trev-f/SRAtac -profile test 
     ```
 5. Run your analysis:
     ```
-    nextflow run SRAlign -profile docker --input <input.csv> --genome <valid genome key>
+    nextflow run trev-f/SRAtac -profile docker --input <input.csv> --genome <valid genome key>
     ```
 
 Detailed documentation can be found in [docs](docs/) and [usage](docs/usage.md)
