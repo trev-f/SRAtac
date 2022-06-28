@@ -52,7 +52,6 @@ include { BamCoverage           as BamCoverage        } from "${baseDir}/modules
 include { CallPeaksMacs2SWF     as CallPeaksMacs2     } from "${baseDir}/subworkflows/peaks/CallPeaksMacs2SWF.nf"
 include { MergePeaksHomer       as MergePeaksHomer    } from "${baseDir}/modules/peaks/MergePeaksHomer.nf"
 include { ConvertMergedPeaks    as ConvertMergedPeaks } from "${projectDir}/modules/peaks/ConvertMergedPeaks.nf"
-include { CountFeatureCounts    as CountFeatureCounts } from "${projectDir}/modules/counts/CountFeatureCounts.nf"
 include { ParseDesignSWF        as ParseDesign        } from "${projectDir}/subworkflows/inputs/ParseDesignSWF.nf"
 include { FastpTrimReadsSWF     as FastpTrimReads     } from "${projectDir}/subworkflows/reads/FastpTrimReadsSWF.nf"
 include { ReadsQCSWF            as ReadsQC            } from "${projectDir}/subworkflows/reads/ReadsQCSWF.nf"
@@ -66,6 +65,7 @@ include { SeqtkSample           as SeqtkSample        } from "${projectDir}/modu
 include { ContaminantStatsQCSWF as ContaminantStatsQC } from "${projectDir}/subworkflows/align/ContaminantStatsQCSWF.nf"
 include { PreseqSWF             as Preseq             } from "${projectDir}/subworkflows/complexity/PreseqSWF.nf"
 include { DeepToolsMultiBamSWF  as DeepToolsMultiBam  } from "${projectDir}/subworkflows/align/DeepToolsMultiBamSWF.nf"
+include { FeatureCountsSWF      as FeatureCounts      } from "${projectDir}/subworkflows/counts/FeatureCountsSWF.nf"
 include { FullMultiQC           as FullMultiQC        } from "${projectDir}/modules/misc/FullMultiQC.nf"
 
 
@@ -408,13 +408,12 @@ workflow SRAtac {
             toolIDs: it[3]
         }
     
-    CountFeatureCounts(
-        ch_alignmentsCollect.bam.collect(),
-        ch_alignmentsCollect.toolIDs.first(),
-        ch_mergePeaksSAF,
-        outBasePrefix
+    FeatureCounts(
+        ch_alignments,
+        ch_mergePeaksSAF
     )
-    ch_countFeatureCounts = CountFeatureCounts.out.featCountsSummary
+    ch_countsFeatureCounts  = FeatureCounts.out.countsFeatureCounts
+    ch_summaryFeatureCounts = FeatureCounts.out.summaryFeatureCounts
 
     /*
     ---------------------------------------------------------------------
@@ -433,7 +432,7 @@ workflow SRAtac {
         .concat(ch_preseqLcExtrap)
         .concat(ch_peaksXls)
         .concat(
-            ch_countFeatureCounts
+            ch_countsFeatureCounts
                 .map {
                     it[0]
                 }
