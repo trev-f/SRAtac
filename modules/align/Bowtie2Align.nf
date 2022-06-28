@@ -42,4 +42,13 @@ process Bowtie2Align {
             ${argReads} \
             -S ${metadata.sampleName}${suffix}.sam
         """
+    
+    stub:
+        // update toolID and set suffix
+        toolIDs += "bt2-${refName}"
+        suffix = toolIDs ? "__${toolIDs.join('_')}" : ''
+
+        """
+        touch ${metadata.sampleName}${suffix}.sam
+        """
 }

@@ -1,5 +1,5 @@
-include { ParseDesign } from "${projectDir}/modules/inputs/ParseDesign.nf"
-include { IndexBam    } from "${projectDir}/modules/align/IndexBam.nf"
+include { ParseDesign   } from "${projectDir}/modules/inputs/ParseDesign.nf"
+include { SamtoolsIndex } from "${projectDir}/modules/align/SamtoolsIndex.nf"
 
 workflow ParseDesignSWF {
     take:
@@ -17,9 +17,9 @@ workflow ParseDesignSWF {
                 bams:  it[1].any { it =~ /\.bam$/ }       // add channels with bams to bams channel
             }
             .set { design }
-        
+
         // Index bams
-        IndexBam(
+        SamtoolsIndex(
             design.bams
         )
             .set { bamBai }
@@ -52,13 +52,6 @@ def createDesignChannel(LinkedHashMap row) {
         // create an empty list for tool IDs for suffixes
         toolIDs = []
 
-        // check that reads files exist
-        reads.each {
-            if (!it.exists()) {
-                exit 1, "ERROR: ${it} does not exist!"
-            }
-        }
-
         return [metadata, reads, toolIDs]
     }
     
@@ -74,13 +67,6 @@ def createDesignChannel(LinkedHashMap row) {
 
         // create an empty list for tool IDs for suffixes
         toolIDs = row.tool_IDs.split('_')
-
-        // check that reads files exist
-        bam.each {
-            if (!it.exists()) {
-                exit 1, "ERROR: ${it} does not exist!"
-            }
-        }
 
         return [metadata, bam, toolIDs]
     }

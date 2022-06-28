@@ -1,5 +1,5 @@
-include { SamtoolsFlagstat   } from "${baseDir}/modules/align/SamtoolsFlagstat.nf"
-include { ContaminantStatsQC } from "${baseDir}/modules/align/ContaminantStatsQC.nf"
+include { SamtoolsFlagstat   } from "${projectDir}/modules/align/SamtoolsFlagstat.nf"
+include { ContaminantStatsQC } from "${projectDir}/modules/align/ContaminantStatsQC.nf"
 
 workflow ContaminantStatsQCSWF {
     take:

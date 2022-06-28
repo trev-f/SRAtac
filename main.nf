@@ -2,42 +2,13 @@
 
 /*
 ---------------------------------------------------------------------
-    trev-f/sralign
+    trev-f/SRAlign
 ---------------------------------------------------------------------
-sralign - A flexible pipeline for short read alignment to a reference.
-https://github.com/trev-f/sralign
+SRAlign - A flexible pipeline for short read alignment to a reference.
+https://github.com/trev-f/SRAlign
 */
 
 nextflow.enable.dsl=2
-
-
-/*
----------------------------------------------------------------------
-    HELP MESSAGE
----------------------------------------------------------------------
-*/
-
-// Write help message
-def help_message() {
-    log.info"""
-    Usage:
-
-        nextflow run sralign -profile docker --input YYYYMMDD_input.csv --genome WBCel235
-
-    Required arguments:
-        -profile
-        --input
-        --genome
-    """.stripIndent()
-}
-
-
-// Show help message
-if (params.help) {
-    help_message()
-    exit 0
-}
-
 
 /*
 ---------------------------------------------------------------------
@@ -45,8 +16,8 @@ if (params.help) {
 ---------------------------------------------------------------------
 */
 
-include { sralign } from './workflows/sralign.nf'
+include { SRAlign } from './workflows/SRAlign.nf'
 
 workflow {
-    sralign()
+    SRAlign()
 }

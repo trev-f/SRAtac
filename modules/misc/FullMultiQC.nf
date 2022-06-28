@@ -27,4 +27,9 @@ process FullMultiQC {
             -c ${config} \
             ${multiqcFiles}
         """
+
+    stub:
+        """
+        touch ${runName}.html
+        """
 }

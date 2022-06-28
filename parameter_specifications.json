@@ -1,0 +1,173 @@
+{
+    "mandatory" : {
+        "title" : "Mandatory parameters",
+        "parameters" : {
+            "input"  : {
+                "description" : "Path to input csv file."
+            },
+            "genome" : {
+                "description" : "Reference genome ID."
+            }
+        }
+    },
+    "io" : {
+        "title" : "Input/Output parameters",
+        "parameters" : {
+            "baseDirGenome" : {
+                "default"     : "${launchDir}/data/references",
+                "description" : "Path to base directory where genomes are found."
+            },
+            "baseDirReport" : {
+                "default"     : "${launchDir}/results/reports",
+                "description" : "Path to base directory where output reports will be stored."
+            },
+            "baseDirData"   : {
+                "default"     : "${launchDir}/results/data",
+                "description" : "Path to base directory where output data will be stored."
+            }
+        }
+    },
+    "reportQC" : {
+        "title" : "QC reporting parameters",
+        "parameters" : {
+            "multiqcConfig" : {
+                "default"     : "${projectDir}/configs/full_multiqc_config.yaml",
+                "description" : "Path to MultiQC config file."
+            }
+        }
+    }, 
+    "references" : {
+        "title" : "Reference parameters",
+        "parameters" : {
+            "contaminant"   : {
+                "default"     : "EB1",
+                "description" : "Contaminant genome ID."
+            }
+        }
+    }, 
+    "readsQC"   : {
+        "title" : "Reads QC parameters",
+        "parameters" : {
+            "skipReadsQC"   : {
+                "default"     : false,
+                "description" : "Skip all reporting of reads QC. This skips FastQC reporting for raw and trimmed reads as well as the creation of a dedicated reads MultiQC report."
+            },
+            "skipDedicatedReadsMultiQC"   : {
+                "default"     : false,
+                "description" : "Skip creation of an additional MultiQC report for reads. FastQC metrics will still be present in the final MultiQC report upon pipeline completion. A dedicated reads MultiQC report can be beneficial for assessing information about reads prior to (or concurrent with) alignment and post-alignment steps."
+            },
+            "skipRawFastQC" : {
+                "default"     : false,
+                "description" : "Skip FastQC report for raw reads."
+            }
+        }
+    },
+    "trimReads" : {
+        "title" : "Read-trimming parameters",
+        "parameters" : {
+            "trimTool"      : {
+                "default"     : "fastp",
+                "description" : "Tool to use for read trimming."
+            },
+            "adapterR1"     : {
+                "default"     : "",
+                "description" : "Adapter sequence to trim from read 1."
+            },
+            "adapterR2"     : {
+                "default"     : "",
+                "description" : "Adapter sequence to trim from read 2."
+            },
+            "skipTrimReads" : {
+                "default"     : false,
+                "description" : "Skip the read trimming step.",
+                "skip"        : true
+            },
+            "skipTrimFastQC" : {
+                "default"     : false,
+                "description" : "Skip QC report for trimmed reads.",
+                "skip"        : true
+            }
+        }
+    }, 
+    "alignment" : {
+        "title" : "Alignment parameters",
+        "parameters" : {
+            "alignmentTool" : {
+                "default"     : "bowtie2",
+                "description" : "Tool to use for alignment to reference. The same tool is used to align to both genome and contaminant."
+            },
+            "forceAlignRawReads" : {
+                "default"     : false,
+                "description" : "Force alignment of raw reads even if read trimming is performed."
+            },
+            "forceUseHisat2Index" : {
+                "default"     : true,
+                "description" : "Use the provided HISAT2 index if it is supplied."
+            },
+            "buildSpliceAwareIndex" : {
+                "default"     : false,
+                "description" : "Build the alignment tool index in a splice-aware manner (for aligners where this is possible)."
+            },
+            "skipAlignGenome" : {
+                "default"     : false,
+                "description" : "Skip alignment of reads to reference.",
+                "skip"        : true
+            },
+            "skipAlignContam" : {
+                "default"     : false,
+                "description" : "Skip alignment of reads to contaminant.",
+                "skip"        : true
+            }
+        }
+    }, 
+    "libraryQC" : {
+        "title" : "Library QC parameters",
+        "parameters" : {
+            "skipAlignmentStatsQC" : {
+                "default"     : false,
+                "description" : "Skip QC report for alignment.",
+                "skip"        : true
+            }
+        }
+    }, 
+    "libraryComplexity" : {
+        "title" : "Library complexity parameters",
+        "parameters" : {
+            "skipPreseq"    : {
+                "default"     : false,
+                "description" : "Skip Preseq.",
+                "skip"        : true
+            }
+        }
+    },
+    "resources" : {
+        "title" : "Resources default parameters",
+        "parameters" : {
+            "maxCpus"       : {
+                "default"     : 16,
+                "description" : "Maximum number of CPUs for a task."
+            },
+            "maxMemory"     : {
+                "default"     : "24.GB",
+                "description" : "Maximum memory for a task."
+            },
+            "maxTime"       : {
+                "default"     : "24.h",
+                "description" : "Maximum time for a task."
+            }
+        }
+    },
+    "miscellaneous" : {
+        "title" : "Miscellaneous parameters",
+        "parameters" : {
+            "seed"          : {
+                "default"     : 40,
+                "description" : "Seed integer for all pseudo-random processes. Specific seed value should not be important but ensures reproducibility."
+            },
+            "help"          : {
+                "default"     : null,
+                "description" : "Display this help message and exit the program."
+            }
+        }
+    } 
+}
