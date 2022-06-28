@@ -33,11 +33,6 @@ contaminant = params.genomes[ params.contaminant ]
     ---------------------------------------------------------------------
 */
 
-include { SambambaFilterBam     as SambambaFilterBam  } from "${baseDir}/modules/align/SambambaFilterBam.nf"
-include { BamCoverage           as BamCoverage        } from "${baseDir}/modules/coverage/BamCoverage.nf"
-include { CallPeaksMacs2SWF     as CallPeaksMacs2     } from "${baseDir}/subworkflows/peaks/CallPeaksMacs2SWF.nf"
-include { MergePeaksHomer       as MergePeaksHomer    } from "${baseDir}/modules/peaks/MergePeaksHomer.nf"
-include { ConvertMergedPeaks    as ConvertMergedPeaks } from "${projectDir}/modules/peaks/ConvertMergedPeaks.nf"
 include { ParseDesignSWF        as ParseDesign        } from "${projectDir}/subworkflows/inputs/ParseDesignSWF.nf"
 include { FastpTrimReadsSWF     as FastpTrimReads     } from "${projectDir}/subworkflows/reads/FastpTrimReadsSWF.nf"
 include { ReadsQCSWF            as ReadsQC            } from "${projectDir}/subworkflows/reads/ReadsQCSWF.nf"
@@ -51,6 +46,11 @@ include { SeqtkSample           as SeqtkSample        } from "${projectDir}/modu
 include { ContaminantStatsQCSWF as ContaminantStatsQC } from "${projectDir}/subworkflows/align/ContaminantStatsQCSWF.nf"
 include { PreseqSWF             as Preseq             } from "${projectDir}/subworkflows/complexity/PreseqSWF.nf"
 include { DeepToolsMultiBamSWF  as DeepToolsMultiBam  } from "${projectDir}/subworkflows/align/DeepToolsMultiBamSWF.nf"
+include { SambambaFilterBam     as SambambaFilterBam  } from "${projectDir}/modules/align/SambambaFilterBam.nf"
+include { BamCoverage           as BamCoverage        } from "${projectDir}/modules/coverage/BamCoverage.nf"
+include { CallPeaksMacs2SWF     as CallPeaksMacs2     } from "${projectDir}/subworkflows/peaks/CallPeaksMacs2SWF.nf"
+include { MergePeaksHomer       as MergePeaksHomer    } from "${projectDir}/modules/peaks/MergePeaksHomer.nf"
+include { ConvertMergedPeaks    as ConvertMergedPeaks } from "${projectDir}/modules/peaks/ConvertMergedPeaks.nf"
 include { FeatureCountsSWF      as FeatureCounts      } from "${projectDir}/subworkflows/counts/FeatureCountsSWF.nf"
 include { FullMultiQC           as FullMultiQC        } from "${projectDir}/modules/misc/FullMultiQC.nf"
 

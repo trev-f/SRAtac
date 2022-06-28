@@ -5,7 +5,7 @@ Purpose: Compute read coverages for BAMs
 */
 
 process DeepToolsMultiBamSummary {
-    tag "${}"
+    tag "${outName}"
 
     label 'mem_mid'
     label 'cpu_mid'
