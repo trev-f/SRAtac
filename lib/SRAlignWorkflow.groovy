@@ -27,8 +27,9 @@ class SRAlignWorkflow {
 
     /** valid tools available in the pipeline */
     public static LinkedHashMap validTools = [
-        trim      : ['fastp'],
-        alignment : ['bowtie2', 'hisat2']
+        trim       : ['fastp'],
+        alignment  : ['bowtie2', 'hisat2'],
+        mergePeaks : ['homer']
     ]
 
     // pipeline ASCII logo
@@ -251,6 +252,12 @@ class SRAlignWorkflow {
         // check valid alignment tool
         assert params.alignmentTool in validTools.alignment , 
             "'${params.alignmentTool}' is not a valid alignment tool option.\n\tValid alignment tool options: ${validTools.alignment.join(', ')}\n\t"
+        
+
+        // check valid merge peaks tool
+        assert params.mergePeaksTool in validTools.mergePeaks ,
+            "'${params.mergePeaksTool} is not a valied peak-merging tool.\n\tValid merge peaks tool options: ${validTools.mergePeaks.join(', ')}\n\t'"
+
     }
 
 
