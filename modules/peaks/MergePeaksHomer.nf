@@ -33,9 +33,9 @@ process MergePeaksHomer {
         mergePeaks \
             ${task.ext.args} \
             -gsize ${effectiveGenomeSize} \
-            -matrix ${inName}_${workflow.runName}_${workflow.start}${suffix} \
-            -venn ${inName}_${workflow.runName}_${workflow.start}${suffix}-venn.txt \
+            -matrix ${inName}${suffix} \
+            -venn ${inName}${suffix}-venn.txt \
             ${peaksFiles} \
-            > ${inName}_${workflow.runName}_${workflow.start}${suffix}.txt
+            > ${inName}${suffix}.txt
         """
 }
